@@ -14,6 +14,7 @@ Build and test your three tools in `tools.py` first. Then come here.
 """
 
 import config
+import re
 import trace
 from tools import search_listings, suggest_outfit, create_fit_card
 from generate import ModelUnavailable
@@ -108,7 +109,34 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     session = new_session(query, wardrobe)
 
     # TODO: delete these two lines and build the loop.
-    session["error"] = "The planning loop isn't built yet — see the TODO in agent.py."
+    max_price = None
+    price_match = re.search(r'\$(\d+(?:\.\d+)?)', query)
+    if price_match:
+        max_price = float(price_match.group(1))
+
+    size = None
+    size_match = re.search(r'\bsize\s+(\w+)', query, re.IGNORECASE)
+    if size_match:
+        size = size_match.group(1)
+
+    session["parsed"] = {"description": query,
+                         "size": size, "max_price": max_price}
+
+    results = search_listings(query, size=size, max_price=max_price)
+    session["search_results"] = results
+
+    if not results:
+        session["error"] = (
+            f"No listings matched '{query}'. Try a broader description, "
+            f"a higher price limit, or a different size."
+        )
+        return session
+
+    session["selected_item"] = results[0]
+    session["outfit_suggestion"] = suggest_outfit(
+        session["selected_item"], wardrobe)
+    session["fit_card"] = create_fit_card(
+        session["outfit_suggestion"], session["selected_item"])
     return session
 
 
@@ -117,11 +145,13 @@ def run_agent(query: str, wardrobe: dict) -> dict:
 def _show(session: dict) -> None:
     if session["error"]:
         print(f"  stopped: {session['error']}")
-        print(f"  fit_card is {session['fit_card']!r} — it should still be None here")
+        print(
+            f"  fit_card is {session['fit_card']!r} — it should still be None here")
         return
 
     item = session["selected_item"] or {}
-    print(f"  found:    {item.get('title')} — ${item.get('price')} on {item.get('platform')}")
+    print(
+        f"  found:    {item.get('title')} — ${item.get('price')} on {item.get('platform')}")
     print(f"  outfit:   {session['outfit_suggestion']}")
     print(f"  fit card: {session['fit_card']}")
 
