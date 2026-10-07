@@ -59,24 +59,24 @@
 
 ### `search_listings`
 
-- **What it does:**
-- **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** it receives as parameters: description(mandatory), size(optional) and max_price(optional) and returns a list of dictionaries 
+- **Inputs:** <!-- name and type each: `max_price` (float), not "a price" --> 'description'(str), 'size'(str | None=None), 'max_price'(float | None=None )
+- **Returns:** a list of dictionaries with every field in the listings for each item (dictionary)
+- **When it has nothing:** it returns an empty list, not None
 
 ### `suggest_outfit`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** It receives as parameters: new item and wardrobe items and returns an outfit suggestions with what is in wardrobe
+- **Inputs:** 'new_item'(dict), 'wardrobe'(dict)
+- **Returns:** a non-empty string with outfit suggestions (string)
+- **When it has nothing:** if wardrobe is empty, then returns a string with general outfit suggestions based on models trained knowledge, no empty returns
 
 ### `create_fit_card`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** It receives as parameters: outfit and new_item from suggest_outfit, then returns a 2-4 sentence caption
+- **Inputs:** 'outfit'(str), 'new_item'(dict)
+- **Returns:** 2-4 sentence caption which mentions the item, its price, and platform once each, and also more specific vibe (string) 
+- **When it has nothing:** if outfit is empty/whitespace, it returns a descriptive message, no raising.
 
 ---
 
@@ -93,14 +93,15 @@
      The grader checks your code against what you claim here, so the file and
      function have to be real. -->
 
-**Branch rule:**
+**Branch rule:** It should stop and not call 'suggest_outfit' if 'search_listings' returns an empty list. Otherwise, it should take the first result and continue to 'suggest_outfit'
 
 **Where it lives:** `agent.py::run_agent`
 
-**How the query is parsed:** <!-- regex, string splitting, or asking the model — say which -->
+**How the query is parsed:** <!-- regex, string splitting, or asking the model — say which --> 
+Regex / string splitting pulls out 'max_price', 'size', and treats the rest as the description. So, no model call needed here.
 
 **What moves through the session:** <!-- which fields, in what order -->
-
+'query' -> 'parsed' -> 'search_results' -> 'selected_item' ->  'outfit_suggestion' -> 'fit_card'
 ---
 
 ## Sample Run
