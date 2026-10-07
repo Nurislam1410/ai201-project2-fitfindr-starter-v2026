@@ -39,7 +39,7 @@ Given a query that matches no listings, the agent stops before calling
 **Why this target:**
 <!-- Why is 5 of 5 reasonable here when criterion 1 isn't? What's different
      about this path? -->
-
+Because no model will be called in this path, so a miss would be a bug.
 ---
 
 ## 3. Something about state
@@ -53,11 +53,11 @@ Given a query that matches no listings, the agent stops before calling
      look like state failure — it looks like a tool problem. Something that
      compares session["selected_item"] against what actually reached
      suggest_outfit is the shape you're after. -->
-
+Given a matching query, the item X has the same id as the item Y in 5 of 5 tries.
 
 
 **Why this target:**
-
+Because no model involved in passing state, so less than 5/5 means something is broken.
 
 
 ---
@@ -74,11 +74,11 @@ Given a query that matches no listings, the agent stops before calling
      mentions the price? Two different items producing the same opening
      sentence? A card longer than a caption anyone would post? Any of those can
      be turned into a number. -->
-
+Model must mention the price, the platform and never exceed 60 words in 4 of 5 tries.
 
 
 **Why this target:**
-
+Because here the model is actually called, so some run-to-run variance in hitting every requirement might happen.
 
 
 ---
@@ -91,11 +91,11 @@ Given a query that matches no listings, the agent stops before calling
      wardrobe path, what happens when the model can't be reached, whether the
      search respects a price ceiling — anything, as long as it names a number
      or an observable outcome. -->
-
+Search for sizes must include the related listings and exclude unrelated ones in 5 of 5 tries.
 
 
 **Why this target:**
-
+Because model won't be called in this step, and any misses would mean a bug in the code.
 
 
 ---
