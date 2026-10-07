@@ -79,10 +79,20 @@ def search_listings(
         python -c "from tools import search_listings; print(search_listings('graphic tee', max_price=30))"
     """
     # TODO: replace this with your implementation
-    return []
+    listings = load_listings()
+    results = []
+    for item in listings:
+        if max_price is not None and item["price"] > max_price:
+            continue
+        if size is not None and size.lower() not in [t.lower() for t in item["size"].split()]:
+            continue
+        if any(word.lower() in item["description"].lower() or word.lower() in item["title"].lower() for word in description.split()):
+            results.append(item)
 
+    return results
 
 # ── Tool 2: suggest_outfit ────────────────────────────────────────────────────
+
 
 def suggest_outfit(new_item: dict, wardrobe: dict) -> str:
     """
@@ -113,7 +123,14 @@ def suggest_outfit(new_item: dict, wardrobe: dict) -> str:
         python -c "from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_example_wardrobe()))"
     """
     # TODO: replace this with your implementation
-    return ""
+    items = wardrobe.get("items", [])
+    if not items:
+        prompt = f"Suggest a general outfit idea for this item: {new_item['title']}, a {new_item['category']} in {new_item['colors']}. Keep it to 2-3 sentences."
+    else:
+        wardrobe_desc = "; ".join(
+            f"{i['name']} ({', '.join(i['style_tags'])})" for i in items)
+        prompt = f"The user owns: {wardrobe_desc}. Suggest how to style this new item: {new_item['title']}, a {new_item['category']}. Name specific pieces they own. keep it to 2-3 sentences."
+    return generate(prompt)
 
 
 # ── Tool 3: create_fit_card ───────────────────────────────────────────────────
@@ -153,4 +170,12 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
         python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
     """
     # TODO: replace this with your implementation
-    return ""
+    if not outfit or not outfit.strip():
+        return "no outfit was suggested, so no fit card could be written."
+    prompt = (
+        f"Write a 2-4 sentence social-media-style caption for this thrifted find: "
+        f"{new_item['title']}, priced at ${new_item['price']:.0f} on {new_item['platform']}. "
+        f"Outfit idea: {outfit}. Mention the price (as a number) and platform once each. "
+        f"Keep it under 60 words, written like a real post, not a product listing."
+    )
+    return generate(prompt)
