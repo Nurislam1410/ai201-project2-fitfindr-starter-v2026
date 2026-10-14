@@ -169,6 +169,12 @@ Nothing beats the fit of broken-in vintage denim. 👖✨ Just scored these perf
 - *What came back:* Claude pointed out that Python's `not outfit` check doesn't catch whitespace-only strings (`"   "` is truthy, not falsy), so my spec was missing that edge case.
 - *What I changed:* Updated the line to "if outfit is empty/whitespace," and the actual code check uses `.strip()` instead of just `not outfit`.
 
+**Moment 3 (Unit 4, Milestone 2's sanctioned exercise)**
+
+- *What I asked for:* copied the three actual failure messages my agent generates and asked what I should attempt next as a user who is unable to see the code, for each of these messages, and also whether any of them left me with no possible next step.
+- *What came back:* for the empty search message, that one of the three named filters should be adjusted; for the model unavailable message, there was also an action to take — check the env file or get a new key from the specified URL; regarding the empty wardrobe message, it was observed that this is not in fact an error message at all, since the branch succeeds by giving general advice rather than personalized advice, so the question doesn't apply in the same way.
+- *What I changed:* The code contains nothing since all three messages had already given the user something to try; however, the observation about the empty wardrobe altered the way I viewed that particular path in comparison to the other two — it should be classified as a success case, not as a failure message.
+
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
      Don't fill these in during unit 3.
@@ -189,18 +195,29 @@ Nothing beats the fit of broken-in vintage denim. 👖✨ Just scored these perf
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. Matching query completes all three tools | 4 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 2. Impossible query stops before second tool | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 3. Selected item id stays consistent | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 4. Fit card mentions price, platform, ≤60 words | 4 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 5. Size filter includes related, excludes unrelated | 5 of 5 | FAIL | FAIL | FAIL | FAIL | FAIL | MISSED (0/5) |
 
-**Real output from one try**, pasted as text, naming the file and function
-that produced it:
+Full output for all 30 tries (6 scenarios × 5) is in
+`results/run_2026-10-13_2120_before.md`.
+
+**Real output from one try**, from `tools.py::search_listings` as called by
+`agent.py::run_agent` for criterion 5, scenario "size filter matches related
+sizes only," query `"graphic tee size M"` — identical on all 5 tries since
+nothing here calls the model:
 
 ```
-
+selected_item: 90s Silk Slip Dress — Floral, Midi Length ($30.0, depop)
+search_results: 4
+[1] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 4 items: 90s Silk Slip Dress — Floral, Midi Length, 90s Leather Bomber — Black, Vintage Knit Vest — Argyle Brown/Cream … +1 more
 ```
+
+None of the 4 results are graphic tees.
 
 ---
 
@@ -224,15 +241,15 @@ that produced it:
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Matching query completes all three tools | 4 of 5 | MET (5/5) | Counted a pass where the session's error field was `None` and a non-empty fit card existed. All five tries completed. |
+| 2 | Impossible query stops before second tool | 5 of 5 | MET (5/5) | Whenever the search results were empty, a PASS was recorded: the error field named what to change, the trace showed only step 1, and no `suggest_outfit`/`create_fit_card` calls happened. All five attempts halted properly. |
+| 3 | Selected item id stays consistent | 5 of 5 | MET (5/5) | For each of the five attempts, the item logged at search time was compared with the item referenced in the fit card text, by title, price, and platform — the same item was obtained throughout the entire process every time. |
+| 4 | Fit card mentions price, platform, ≤60 words | 4 of 5 | MET (5/5) | Each of the five fit cards was checked to ensure it included a dollar amount, the platform name, and a word count under 60; all five met the requirements, the longest being about 41 words. |
+| 5 | Size filter includes related, excludes unrelated | 5 of 5 | MISSED (0/5) | On all five attempts the same four non-tee items were returned — a dress, a bomber jacket, a vest, and one more — with no actual graphic tees. Since nothing here calls the model, zero out of five indicates a real bug, not random variation. |
 
 **Diagnoses**
 
-
+On all five attempts, criterion 5 failed, with the same four incorrect items appearing each time. This indicates the presence of a bug in `search_listings`'s keyword matching mechanism, not a problem with the branch or the session. In the loop the complete raw query is passed through as the `description` argument, even though the size value has already been parsed out separately. Within `search_listings`, the match test breaks the full string down into words and then checks each of them to see if it appears as a substring in both the title and the description of each listing. The single character token remaining from the size value acts like a wildcard, since that letter occurs in almost every listing's text, causing it to include items that are unrelated even if the actual keywords would have matched individually. There is also no scoring or sorting stage, even though the tool's documentation states that the best match should appear first, so it just returns the items that pass the filter in the original order of the data. This constitutes one root cause leading to one failing criterion, not three separate problems.
 
 ---
 
@@ -251,19 +268,38 @@ that produced it:
 **Happy path**
 
 ```
+$ python app.py ask 'vintage graphic tee under $30' --trace
 
+[1] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+[2] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg jeans and chunky white sneakers for an effortless…
+[3] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with this Y2K butterfly baby tee! 🦋 Pair it with baggy dark wash jeans, chunky white sneakers, a brown…
+
+  Found:    Y2K Baby Tee — Butterfly Print — $18.0 on depop
+  Outfit:   Pair the Y2K baby tee with your baggy straight-leg jeans and chunky white sneakers for an effortless, nostalgic streetwear look. Cinch the outfit with your brown leather belt and sling your black crossbody bag across your chest to complete the vibe.
+  Fit card: Obsessed with this Y2K butterfly baby tee! 🦋✨ Pair it with baggy dark wash jeans, chunky white sneakers, a brown belt, and a black crossbody for the ultimate nostalgic fit. Grab this gem on Depop before I change my mind!
 ```
 
 **Empty search**
 
 ```
+$ python app.py ask 'designer ballgown size XXS under $5' --trace
 
+[1] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: [] (empty)
+
+  No listings matched 'designer ballgown size XXS under $5'. Try a broader description, a higher price limit, or a different size.
 ```
 
-**On the MCP move:** <!-- what changed in your code, and whether anything
-behaved differently afterwards. If the rewire didn't work, say exactly where it
-broke — the error text and the last thing that worked. That earns the point in
-full. -->
+Three steps on the happy path, one on the empty-search path — the branch is visibly doing something, not just claimed.
+
+**On the MCP move:** `search_listings` has now been registered on the MCP server, with a description written for someone who can't see the code, and the inputs it accepts matching those in the Tool Inventory. The agent no longer imports or directly calls `search_listings` — instead it calls the function via the MCP client. After that point there was no difference in behaviour: both the successful search scenario and the case of an empty search gave exactly the same output as in the previous version where the call was made directly, since that was the aim of the exercise — the way the call was made has changed, but the return value has not.
 
 
 
@@ -276,36 +312,46 @@ full. -->
 
      `python run_eval.py --label after` -->
 
-**What I changed:**
+**What I changed:** In `tools.py::search_listings`, filtered the keyword list down to tokens of 3+ characters before the `any(word in title/description ...)` match, instead of matching on every word in the raw query:
 
-**Which failure it was meant to fix:**
+```python
+keywords = [w for w in description.split() if len(w) >= 3]
+...
+if keywords and any(word.lower() in item["description"].lower() or word.lower() in item["title"].lower() for word in keywords):
+    results.append(item)
+```
+
+**Which failure it was meant to fix:** It directly addresses the diagnosis required by criterion 5 — the single character token that remained from the parsed size value was matching almost any listing as a substring and was thus acting like a wildcard by including unrelated items.
 
 ### Run Log — After
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. Matching query completes all three tools | 4 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 2. Impossible query stops before second tool | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 3. Selected item id stays consistent | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 4. Fit card mentions price, platform, ≤60 words | 4 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 5. Size filter includes related, excludes unrelated | 5 of 5 | FAIL | FAIL | FAIL | FAIL | FAIL | MISSED (0/5) |
 
-**Did it help, and how do I know:**
+Full output in `results/run_2026-10-13_2127_after.md`.
 
-<!-- If it made things worse, say that. Honestly reported, that earns full
-     credit and is more interesting than one that worked. -->
-
+**Did it help, and how do I know:** In part, and by giving an honest report rather than rounding it up to a win. The wildcard matching bug has in fact been fixed, as can be seen when the search function is tested directly afterwards — it now properly displays the genuine graphic tees which the previous code completely failed to return for this query. However, criterion 5 still fails, with zero out of five. The way in which the failure manifests has changed. Previously, the search used to return four incorrect items each time; now it returns no items at all, since the size filter carries out an exact match after splitting on whitespace, and a combined size value with no internal space will never match the single letter token that is being searched for. The graphic tees in this dataset are never tagged with that single letter by themselves, so none of them satisfy the size filter no matter what the fix for the keyword issue is. That second bug has always existed, it was merely hidden by the first bug which was allowing irrelevant items to pass through anyway. Once this change was made and properly measured, a second real problem emerged rather than being concealed.
 
 
 ---
 
 ## What's Still Broken
 
-<!-- For each criterion still missed: what you'd do, and why you stopped where
-     you did. "I ran out of time" is fine if it's true. Pretending nothing is
-     left is not. -->
+**Criterion 5 (size filter) is still not being met, with zero out of five**, against a target of five out of five, and is now failing by returning nothing rather than the incorrect results. The remaining bug lies in the size check itself:
 
+```python
+if size is not None and size.lower() not in [t.lower() for t in item["size"].split()]:
+    continue
+```
 
+which only splits on whitespace, so a combined size value with no space remains as a single token and never matches the plain letter that the user is searching for, even though the tool's own specification states that it should match. The solution would be to also split on the slash, or else to check the individual parts separately before comparing. I did not make this change because the rule for this unit is one improvement, measured, and I had already selected and measured the keyword-matching fix. This second bug is separate from the first one, and the first fix revealed it rather than caused it. I ran out of time today to properly go through a full before-and-after cycle again. This would be the next thing I would fix if I returned to it.
+
+**Everything else (criteria 1-4) is MET**, both before and after the improvement — no other misses to report.
 
 <!-- ═════════════════════════════════════════════════════════════════════
 
