@@ -78,15 +78,20 @@ def search_listings(
     Test it from a terminal before you move on:
         python -c "from tools import search_listings; print(search_listings('graphic tee', max_price=30))"
     """
-    # TODO: replace this with your implementation
     listings = load_listings()
     results = []
+    # Unit 4 improvement: words under 3 characters (e.g. "m", "in", "on") were
+    # matching almost any listing as a substring, since description here is
+    # the full raw query — including words like a parsed-out size ("M") that
+    # were never meant to be keywords. Dropping short tokens stops that
+    # wildcard-style false match without touching anything else.
+    keywords = [w for w in description.split() if len(w) >= 3]
     for item in listings:
         if max_price is not None and item["price"] > max_price:
             continue
         if size is not None and size.lower() not in [t.lower() for t in item["size"].split()]:
             continue
-        if any(word.lower() in item["description"].lower() or word.lower() in item["title"].lower() for word in description.split()):
+        if keywords and any(word.lower() in item["description"].lower() or word.lower() in item["title"].lower() for word in keywords):
             results.append(item)
 
     return results
