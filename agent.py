@@ -16,7 +16,8 @@ Build and test your three tools in `tools.py` first. Then come here.
 import config
 import re
 import trace
-from tools import search_listings, suggest_outfit, create_fit_card
+from mcp_client import call_tool
+from tools import suggest_outfit, create_fit_card
 from generate import ModelUnavailable
 
 
@@ -122,7 +123,18 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     session["parsed"] = {"description": query,
                          "size": size, "max_price": max_price}
 
-    results = search_listings(query, size=size, max_price=max_price)
+    results = call_tool("search_listings", {
+        "description": query,
+        "size": size,
+        "max_price": max_price,
+    })
+
+    trace.step("search_listings (via MCP)", inputs={
+        "description": query,
+        "size": size,
+        "max_price": max_price
+    }, returned=results)
+
     session["search_results"] = results
 
     if not results:
@@ -133,10 +145,21 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         return session
 
     session["selected_item"] = results[0]
-    session["outfit_suggestion"] = suggest_outfit(
-        session["selected_item"], wardrobe)
-    session["fit_card"] = create_fit_card(
-        session["outfit_suggestion"], session["selected_item"])
+    try:
+        session["outfit_suggestion"] = suggest_outfit(
+            session["selected_item"], wardrobe)
+        trace.step("suggest_outfit", inputs={
+            "item": session["selected_item"]["title"],
+            "wardrobe_empty": not wardrobe.get("items")
+        }, returned=session["outfit_suggestion"])
+
+        session["fit_card"] = create_fit_card(
+            session["outfit_suggestion"], session["selected_item"])
+        trace.step("create_fit_card", inputs={
+            "outfit": session["outfit_suggestion"]
+        }, returned=session["fit_card"])
+    except ModelUnavailable as e:
+        session["error"] = f"Model unavailable: {e}"
     return session
 
 
