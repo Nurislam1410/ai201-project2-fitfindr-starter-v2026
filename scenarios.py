@@ -35,18 +35,30 @@ SCENARIOS = [
         "wardrobe": "empty",
         "criterion": None,
     },
-    # TODO: add what your criteria 3, 4 and 5 need.
-    #
-    # Set "criterion" to the number in criteria.md that the scenario tests.
-    # "criterion": None means a diagnostic run — useful to have, but it isn't
-    # one of your five, and run_eval.py marks it as such in the table.
-    #
-    # For a state criterion, any normal query works — what you're checking is
-    # what ends up in the session, not what the user typed.
-    #
-    # For a fit-card criterion, you probably want the SAME query listed more
-    # than once, or several different items, depending on what your criterion
-    # actually says.
+    {
+        # Any matching query — checking what ends up in the session, not
+        # what the user typed. Criterion 3 — state.
+        "name": "selected item id stays consistent",
+        "query": "vintage graphic tee under $30",
+        "wardrobe": "example",
+        "criterion": 3,
+    },
+    {
+        # Same matching query, run 5 times — checking the fit card text each
+        # time for price, platform, and the 60-word ceiling. Criterion 4.
+        "name": "fit card meets format rule",
+        "query": "vintage graphic tee under $30",
+        "wardrobe": "example",
+        "criterion": 4,
+    },
+    {
+        # A query that includes a size, to actually exercise the size
+        # filter (related sizes included, unrelated excluded). Criterion 5.
+        "name": "size filter matches related sizes only",
+        "query": "graphic tee size M",
+        "wardrobe": "example",
+        "criterion": 5,
+    },
 ]
 
 WARDROBES = ("example", "empty")
