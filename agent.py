@@ -18,7 +18,7 @@ import re
 import trace
 from mcp_client import call_tool
 from tools import suggest_outfit, create_fit_card
-from generate import ModelUnavailable
+from generate import ModelUnavailable, reset_fault_state
 
 
 # ── session state ─────────────────────────────────────────────────────────────
@@ -46,6 +46,7 @@ def new_session(query: str, wardrobe: dict) -> dict:
         "outfit_suggestion": None,   # what suggest_outfit returned
         "fit_card": None,            # what create_fit_card returned
         "error": None,               # set when the run ended early
+        "failed_stage": None,        # CAPSTONE: which step the run stopped at, if it did
     }
 
 
@@ -108,6 +109,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         than a stack trace. The import is already at the top of this file.
     """
     session = new_session(query, wardrobe)
+    reset_fault_state()
 
     # TODO: delete these two lines and build the loop.
     max_price = None
@@ -142,10 +144,12 @@ def run_agent(query: str, wardrobe: dict) -> dict:
             f"No listings matched '{query}'. Try a broader description, "
             f"a higher price limit, or a different size."
         )
+        session["failed_stage"] = "search_listings"
         return session
 
     session["selected_item"] = results[0]
     try:
+        session["failed_stage"] = "suggest_outfit"
         session["outfit_suggestion"] = suggest_outfit(
             session["selected_item"], wardrobe)
         trace.step("suggest_outfit", inputs={
@@ -153,11 +157,13 @@ def run_agent(query: str, wardrobe: dict) -> dict:
             "wardrobe_empty": not wardrobe.get("items")
         }, returned=session["outfit_suggestion"])
 
+        session["failed_stage"] = "create_fit_card"
         session["fit_card"] = create_fit_card(
             session["outfit_suggestion"], session["selected_item"])
         trace.step("create_fit_card", inputs={
             "outfit": session["outfit_suggestion"]
         }, returned=session["fit_card"])
+        session["failed_stage"] = None
     except ModelUnavailable as e:
         session["error"] = f"Model unavailable: {e}"
     return session

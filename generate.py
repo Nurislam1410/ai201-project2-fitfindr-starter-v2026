@@ -367,6 +367,14 @@ def generate(
             _record_tokens(response)
             text = (response.text or "").strip()
 
+            if not text:
+                # CAPSTONE: an empty reply is a failure, not an answer. Left
+                # alone it becomes a blank outfit or a blank fit card with no
+                # error anywhere. Not retried: an empty reply is usually the
+                # service declining this prompt (a safety block), and the same
+                # prompt again gets the same answer. Never cached either.
+                raise ModelUnavailable(_explain_empty(response))
+
             if use_cache:
                 _cache_write(key, text)
             return text
@@ -397,6 +405,8 @@ def generate(
                 time.sleep(config.TRANSIENT_BACKOFF_S)
                 continue
 
+            if isinstance(exc, ModelUnavailable):
+                raise
             if not rate_limited:
                 raise ModelUnavailable(_explain(exc)) from exc
 
@@ -413,10 +423,14 @@ def generate(
             )
             time.sleep(backoff)
 
-    raise RuntimeError(
-        f"Still rate limited after {config.MAX_RETRIES} attempts. Wait a "
-        f"minute and try again — your key is fine.\nLast error: {last_error}"
-    )
+    # CAPSTONE: this used to be a bare RuntimeError, which run_agent() didn't
+    # catch — so /ask answered with a 500 and a raw exception. It's the same
+    # kind of failure as the others (the model can't be used right now), so
+    # it gets the same type and the agent's existing handler.
+    raise ModelUnavailable(
+        f"The model is rate limited and still was after {config.MAX_RETRIES} "
+        f"attempts. Wait a minute and try again — nothing is wrong with your request."
+    ) from last_error
 
 
 # ─── Transient failures — CAPSTONE ───────────────────────────────────────────
@@ -465,4 +479,18 @@ def _explain_transient(exc: Exception, tries: int) -> str:
     return (
         f"The model service is having trouble right now ({_short(exc)}; "
         f"{tries} tries). Nothing is wrong with your request — try again in a minute."
+    )
+
+
+def _explain_empty(response) -> str:
+    reason = ""
+    try:
+        candidates = getattr(response, "candidates", None) or []
+        if candidates and getattr(candidates[0], "finish_reason", None):
+            reason = f" (finish reason: {candidates[0].finish_reason})"
+    except Exception:  # noqa: BLE001 — explaining must never raise
+        pass
+    return (
+        f"The model sent back an empty reply{reason}. Try rewording the "
+        f"request, or try again in a minute."
     )

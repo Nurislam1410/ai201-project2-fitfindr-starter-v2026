@@ -149,7 +149,13 @@ def ask():
     if failure is not None:
         return jsonify({"error": failure}), 500
 
-    return jsonify(session)
+    # CAPSTONE: a run the MODEL ended is the service being unavailable, not a
+    # success — say so in the status code, so a caller (or a host's health
+    # dashboard) can tell "no matches" (200, the user can fix it) from "the
+    # model is down" (503, try later) without parsing the sentence.
+    status = 503 if session.get("error") and session.get("failed_stage") in (
+        "suggest_outfit", "create_fit_card") else 200
+    return jsonify(session), status
 
 
 if __name__ == "__main__":
