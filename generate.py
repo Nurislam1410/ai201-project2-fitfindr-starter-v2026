@@ -336,14 +336,23 @@ def generate(
     _check_budget()
 
     last_error: Exception | None = None
-    for attempt in range(config.MAX_RETRIES):
+    rate_attempts = 0
+    transient_attempts = 0
+    while True:
         _wait_for_slot()
         try:
             client = _get_client()
             _call_times.append(time.monotonic())
             _session_calls += 1
 
-            call_config = {"temperature": temperature}
+            # CAPSTONE: every call gets a time limit. The `timeout` fault
+            # keeps the call real and just makes the limit impossibly short,
+            # so it exercises the client's own timeout, not a stand-in.
+            timeout_s = 0.001 if config.FAULT == "timeout" else config.MODEL_TIMEOUT_S
+            call_config = {
+                "temperature": temperature,
+                "http_options": {"timeout": max(1, int(timeout_s * 1000))},
+            }
             if system:
                 call_config["system_instruction"] = system
             kwargs = {
@@ -352,7 +361,9 @@ def generate(
                 "config": call_config,
             }
 
-            response = client.models.generate_content(**kwargs)
+            response = _injected_fault()
+            if response is None:
+                response = client.models.generate_content(**kwargs)
             _record_tokens(response)
             text = (response.text or "").strip()
 
@@ -368,12 +379,34 @@ def generate(
                 or "resource" in message and "exhaust" in message
                 or "rate" in message and "limit" in message
             )
+            transient = _is_transient(exc)
+
+            if transient:
+                # CAPSTONE: a 5xx or a timeout gets TRANSIENT_RETRIES more
+                # tries, then a message — never an unbounded wait.
+                if transient_attempts >= config.TRANSIENT_RETRIES:
+                    raise ModelUnavailable(_explain_transient(exc, transient_attempts + 1)) from exc
+                transient_attempts += 1
+                print(
+                    f"  [transient] {_short(exc)} — retrying in "
+                    f"{config.TRANSIENT_BACKOFF_S:.0f}s (retry {transient_attempts} "
+                    f"of {config.TRANSIENT_RETRIES}).",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                time.sleep(config.TRANSIENT_BACKOFF_S)
+                continue
+
             if not rate_limited:
                 raise ModelUnavailable(_explain(exc)) from exc
-            backoff = _retry_delay(exc, attempt)
+
+            if rate_attempts >= config.MAX_RETRIES - 1:
+                break
+            backoff = _retry_delay(exc, rate_attempts)
+            rate_attempts += 1
             print(
                 f"  [rate limit] service pushed back. Waiting {backoff:.0f}s "
-                f"(attempt {attempt + 1} of {config.MAX_RETRIES}). This is "
+                f"(attempt {rate_attempts} of {config.MAX_RETRIES}). This is "
                 f"the limiter doing its job, not a bug.",
                 file=sys.stderr,
                 flush=True,
@@ -383,4 +416,53 @@ def generate(
     raise RuntimeError(
         f"Still rate limited after {config.MAX_RETRIES} attempts. Wait a "
         f"minute and try again — your key is fine.\nLast error: {last_error}"
+    )
+
+
+# ─── Transient failures — CAPSTONE ───────────────────────────────────────────
+
+_TRANSIENT_CODES = ("500", "502", "503", "504")
+
+
+def _is_transient(exc: Exception) -> bool:
+    """A failure worth one more try: the service erroring, or the call timing out."""
+    if _is_timeout(exc):
+        return True
+    message = str(exc).lower()
+    return (
+        any(code in message for code in _TRANSIENT_CODES)
+        or "unavailable" in message
+        or "overloaded" in message
+    )
+
+
+def _is_timeout(exc: Exception) -> bool:
+    # httpx timeouts often carry an EMPTY message, so match on the type, and
+    # walk the cause chain in case the client wrapped it.
+    seen = exc
+    while seen is not None:
+        name = type(seen).__name__.lower()
+        if "timeout" in name or isinstance(seen, TimeoutError):
+            return True
+        seen = seen.__cause__ or seen.__context__
+    return "timed out" in str(exc).lower()
+
+
+def _short(exc: Exception) -> str:
+    if _is_timeout(exc):
+        return "the model call timed out"
+    text = str(exc).strip().splitlines()[0] if str(exc).strip() else type(exc).__name__
+    return text[:120]
+
+
+def _explain_transient(exc: Exception, tries: int) -> str:
+    if _is_timeout(exc):
+        limit = 0.001 if config.FAULT == "timeout" else config.MODEL_TIMEOUT_S
+        return (
+            f"The model didn't answer within {limit:g}s ({tries} tries). It's "
+            f"probably overloaded — try again in a minute."
+        )
+    return (
+        f"The model service is having trouble right now ({_short(exc)}; "
+        f"{tries} tries). Nothing is wrong with your request — try again in a minute."
     )
