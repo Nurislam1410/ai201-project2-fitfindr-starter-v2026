@@ -43,6 +43,8 @@ _prompt_tokens = 0
 _output_tokens = 0
 _client = None
 _budget_warned = False
+_transient_retries = 0   # CAPSTONE: counted so the request log can show them
+_rate_retries = 0
 
 
 class QuotaGuard(Exception):
@@ -154,6 +156,11 @@ def usage() -> str:
 
 def call_count() -> int:
     return _session_calls
+
+
+def retry_counts() -> dict:
+    """CAPSTONE: how many retries this process has done, by kind."""
+    return {"transient": _transient_retries, "rate_limit": _rate_retries}
 
 
 def token_counts() -> dict:
@@ -321,7 +328,7 @@ def generate(
     Every call in this course goes through here. If you need to change how the
     model is called, change it in this one place.
     """
-    global _session_calls, _cache_hits
+    global _session_calls, _cache_hits, _transient_retries, _rate_retries
 
     use_cache = cache and config.CACHE_ENABLED
     temperature = config.TEMPERATURE if temperature is None else temperature
@@ -395,6 +402,7 @@ def generate(
                 if transient_attempts >= config.TRANSIENT_RETRIES:
                     raise ModelUnavailable(_explain_transient(exc, transient_attempts + 1)) from exc
                 transient_attempts += 1
+                _transient_retries += 1
                 print(
                     f"  [transient] {_short(exc)} — retrying in "
                     f"{config.TRANSIENT_BACKOFF_S:.0f}s (retry {transient_attempts} "
@@ -414,6 +422,7 @@ def generate(
                 break
             backoff = _retry_delay(exc, rate_attempts)
             rate_attempts += 1
+            _rate_retries += 1
             print(
                 f"  [rate limit] service pushed back. Waiting {backoff:.0f}s "
                 f"(attempt {rate_attempts} of {config.MAX_RETRIES}). This is "

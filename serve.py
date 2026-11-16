@@ -27,15 +27,15 @@ web server has to be. The reason is worth reading before you deploy: see the
 note above `_one_at_a_time` below — it also decides which gunicorn worker you
 can use.
 
-⚠️ There is deliberately NO logging, NO timing and NO request counting in this
-file. That is unit 9's follow-along: you instrument this yourself, first, and
-then deploy it. A structured log you were handed teaches you nothing about
-what belongs in one — and the timing field is the one everybody skips.
+CAPSTONE: every /ask request now writes one structured record (requestlog.py)
+— timing, tokens, retries and the outcome — including rejected and failed
+requests.
 """
 
 import os
 import sys
 import threading
+import time
 
 # config first, and before anything that talks to the model: it loads your .env
 # and fixes the Windows console encoding for every module that imports it.
@@ -43,8 +43,16 @@ import config  # noqa: F401
 
 from flask import Flask, jsonify, request
 
+import generate
+import requestlog
 from agent import run_agent
 from utils.data_loader import get_example_wardrobe
+
+# CAPSTONE: let a caller switch a fault on for ONE request with the header
+# X-FitFindr-Fault, so the bad path can be tested on the deployed service
+# without redeploying. OFF unless the host sets FITFINDR_ALLOW_FAULT_HEADER=1 —
+# a public service should not let strangers break it on request.
+ALLOW_FAULT_HEADER = os.getenv("FITFINDR_ALLOW_FAULT_HEADER", "0") == "1"
 
 app = Flask(__name__)
 
@@ -105,29 +113,76 @@ def ask():
     In:   {"query": "...", "wardrobe": {...}}   wardrobe optional — leave it
                                                 out and you get the same
                                                 example wardrobe the CLI uses.
-    Out:  the session dict from run_agent(), as JSON.
+    Out:  the session dict from run_agent(), as JSON, plus a `meta` block with
+          this request's id, timing and token counts (CAPSTONE).
+
+    Every request writes one structured record via requestlog.py — including
+    the ones rejected with a 400 and the ones that crash with a 500.
     """
-    payload = request.get_json(silent=True) or {}
-    query = (payload.get("query") or "").strip()
+    started = time.perf_counter()
+    record = {
+        "ts": requestlog.now_iso(),
+        "request_id": requestlog.new_request_id(),
+        "route": "/ask",
+        "status": None,
+        "outcome": None,
+        "query": None,
+        "wardrobe_items": None,
+        "fault": "",
+        "selected_item": None,
+        "output": None,
+        "error": None,
+        "failed_stage": None,
+        "duration_ms": None,
+        "wait_ms": 0,
+        "model_calls": 0,
+        "prompt_tokens": 0,
+        "output_tokens": 0,
+        "transient_retries": 0,
+        "rate_limit_retries": 0,
+    }
+
+    def finish(body: dict, status: int):
+        record["status"] = status
+        record["duration_ms"] = round((time.perf_counter() - started) * 1000)
+        requestlog.write(record)
+        body = dict(body)
+        body["meta"] = {k: record[k] for k in (
+            "request_id", "duration_ms", "wait_ms", "model_calls",
+            "prompt_tokens", "output_tokens", "transient_retries",
+            "rate_limit_retries", "fault")}
+        return jsonify(body), status
+
+    payload = request.get_json(silent=True)
+    raw_query = payload.get("query") if isinstance(payload, dict) else None
+    record["query"] = raw_query if isinstance(raw_query, str) else (
+        None if raw_query is None else repr(raw_query)[:200])
+    query = raw_query.strip() if isinstance(raw_query, str) else ""
     if not query:
         # 400 rather than a stack trace: the caller can act on this one.
-        return jsonify({"error": "Send JSON with a 'query' field, e.g. "
-                                 '{"query": "vintage graphic tee under $30"}'}), 400
+        record["outcome"] = "bad_input"
+        record["error"] = "missing or empty 'query'"
+        return finish({"error": "Send JSON with a 'query' field, e.g. "
+                                '{"query": "vintage graphic tee under $30"}'}, 400)
 
     wardrobe = payload.get("wardrobe")
     if not isinstance(wardrobe, dict):
         wardrobe = get_example_wardrobe()
+    record["wardrobe_items"] = len(wardrobe.get("items") or [])
+
+    fault = ""
+    if ALLOW_FAULT_HEADER:
+        fault = (request.headers.get("X-FitFindr-Fault") or "").strip().lower()
+        if fault and fault not in config.FAULTS:
+            record["outcome"] = "bad_input"
+            record["error"] = f"unknown fault {fault!r}"
+            return finish({"error": f"Unknown X-FitFindr-Fault {fault!r}. "
+                                    f"Use one of: {', '.join(sorted(config.FAULTS))}."}, 400)
 
     # A queued request should look like a queued request. Without this the
     # second caller just sits there, and "slow" and "waiting its turn" are
     # indistinguishable from the outside — which is how people conclude the
     # deployment is broken when it is behaving exactly as designed.
-    #
-    # This is NOT the logging you add in the follow-along. It prints nothing
-    # on the normal path, carries no timing and counts nothing; it says only
-    # that this request had to wait. `locked()` can be a moment out of date,
-    # so the note is occasionally missed — which costs nothing, because
-    # nothing depends on it.
     if _one_at_a_time.locked():
         print(
             "  [serve] another request is still running. This one is waiting "
@@ -138,24 +193,58 @@ def ask():
 
     failure = None
     session = None
+    wait_started = time.perf_counter()
     with _one_at_a_time:
+        record["wait_ms"] = round((time.perf_counter() - wait_started) * 1000)
+        # Counters in generate.py are per process; the difference across this
+        # run is this request's share. Safe because the lock serialises runs.
+        calls0 = generate.call_count()
+        tokens0 = generate.token_counts()
+        retries0 = generate.retry_counts()
+        saved_fault = config.FAULT
+        if fault:
+            config.FAULT = fault
+        record["fault"] = config.FAULT
         try:
             session = run_agent(query, wardrobe)
         except Exception as exc:  # noqa: BLE001 — a 500 with a sentence beats a hang
             failure = f"{type(exc).__name__}: {exc}"
+        finally:
+            config.FAULT = saved_fault
+            tokens1 = generate.token_counts()
+            retries1 = generate.retry_counts()
+            record["model_calls"] = generate.call_count() - calls0
+            record["prompt_tokens"] = tokens1["prompt"] - tokens0["prompt"]
+            record["output_tokens"] = tokens1["output"] - tokens0["output"]
+            record["transient_retries"] = retries1["transient"] - retries0["transient"]
+            record["rate_limit_retries"] = retries1["rate_limit"] - retries0["rate_limit"]
 
     # Outside the lock: building a response is not work the next caller should
     # be waiting on.
     if failure is not None:
-        return jsonify({"error": failure}), 500
+        record["outcome"] = "crash"
+        record["error"] = failure
+        return finish({"error": failure}, 500)
+
+    record["selected_item"] = (session.get("selected_item") or {}).get("id")
+    record["output"] = session.get("fit_card")
+    record["error"] = session.get("error")
+    record["failed_stage"] = session.get("failed_stage")
 
     # CAPSTONE: a run the MODEL ended is the service being unavailable, not a
     # success — say so in the status code, so a caller (or a host's health
     # dashboard) can tell "no matches" (200, the user can fix it) from "the
     # model is down" (503, try later) without parsing the sentence.
-    status = 503 if session.get("error") and session.get("failed_stage") in (
-        "suggest_outfit", "create_fit_card") else 200
-    return jsonify(session), status
+    if session.get("error") and session.get("failed_stage") in ("suggest_outfit", "create_fit_card"):
+        record["outcome"] = "model_unavailable"
+        status = 503
+    elif session.get("error"):
+        record["outcome"] = "no_results"
+        status = 200
+    else:
+        record["outcome"] = "ok"
+        status = 200
+    return finish(session, status)
 
 
 if __name__ == "__main__":
