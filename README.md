@@ -534,3 +534,41 @@ REQUESTLOG {"ts": "2026-11-16T07:12:06.592Z", "request_id": "d7f8d80e", "route":
 ```
 
 The 10 durations per run (ms) — run 1: 17,333 · 5,200 · 5,427 · 5,887 · 5,294 · 5,355 · 5,600 · **26,462** · 6,225 · 5,821; run 2: 6,396 · 5,373 · 5,514 · 7,401 · 6,645 · 5,940 · 6,069 · **21,256** · 6,430 · 6,759; run 3: 6,062 · 5,375 · 6,217 · 5,531 · 6,880 · 6,268 · 6,364 · **22,271** · 5,925 · 6,432.
+
+*Verdicts and diagnoses.*
+
+- **Criterion 1 — MET (5/5 every run), but for the wrong reason.** The forced timeout failed in about 4–6 s, while a stuck model really takes two 20 s attempts plus search, about 45 s. *Stage:* the `timeout` fault in `generate.py::_injected_fault`/`generate()`. *Mechanism:* the fault made a real call with a 1 ms limit, so the call died while **connecting**, before any request reached the model, so it never measured how long a stuck model takes. I'd tighten this criterion's test, not its target.
+- **Criterion 2 — MISSED (3/4 every run).** *Stage:* same place. *Mechanism:* the connect-phase failure raised a connection error, not a timeout type, so `_is_timeout()` didn't recognise it. `_explain()` then matched the word "connection" and returned "Check your internet connection", which is wrong advice from a server. Evidence: only the first timeout after normal requests retried (`transient_retries: 1`, a pooled connection timing out on the read); every later one, which needed a fresh connection, got `transient_retries: 0`.
+- **Criterion 5 — MISSED in run 1 (8/10; runs 2 and 3 were 9/10).** *Stage:* `generate.py::_wait_for_slot`, the 15-requests-per-minute pacer. *Mechanism:* each run makes 2 model calls, so the 8th request's second call is the 16th in a minute and waits for the window. The Render log shows "Waiting 20s / 15s / 16s" right inside requests 8 of each run. Run 1 also lost its first request (17.3 s): it arrived 10 s after the redeploy booted a fresh worker, a cold start my "warm" definition doesn't exclude.
+- **Pattern:** criteria 1 and 2 are one problem with two symptoms: the timeout fault didn't behave like a stuck model. Criterion 5 is a separate one: free-tier quota pacing.
+
+**The Improvement**
+
+**What I changed** (commit `f87f74d`): the `timeout` fault now behaves like a stuck model. It waits the full per-call limit (20 s) and then raises the same read-timeout error the HTTP client raises, instead of a real call cut off after 1 ms. This follows the shared diagnosis of criteria 1 and 2. Tested locally: a stuck model now ends with "The model didn't answer within 20s (2 tries)" after about 42 s.
+
+**After-run: not completed before the deadline.** The re-run (same 72 requests, `run_capstone_trials.py --label after`) was started at 23:49 PT and takes about 20 minutes because each stuck request now really waits. I submitted before it finished, so there is no after table yet. Expected from the local test, and to be confirmed: criterion 2 → MET (the message now says "didn't answer"), criterion 1 → MISSED (about 45 s against 25 s). If that holds, the fix trades a passing number for an honest one: criterion 1's earlier pass was an artifact of the test.
+
+**What's Still Broken**
+
+- **The after-run isn't recorded.** I ran out of time; the before results and the fix are committed, the measured after is not.
+- **A stuck model takes ~45 s (criterion 1, expected miss).** The fix would be lowering `FITFINDR_MODEL_TIMEOUT` to about 10 s so two attempts plus search fit in 25 s. I didn't, because the unit allows one improvement.
+- **Criterion 5 (pacer).** The 15/min free-tier limit makes every 8th back-to-back request wait 15–20 s. Fixing it means one model call per run instead of two (merging `suggest_outfit` and `create_fit_card`), which changes the prompts, out of scope this unit.
+- **Real connection failures** still get "check your internet connection", with no retry. That message is wrong for a server.
+
+**The one next thing:** connect real secondhand listings (e.g. eBay's API) in place of `data/listings.json`. It's the step that turns this from a demo into something people would actually use, and the hardening I built this unit is what makes it safe to put in front of them.
+
+**How I Used AI**
+
+- **Choosing the system and the shape.**
+  - *What I asked for:* I wanted to take the four AI201 projects and combine them into one big project, and I asked Claude to help me pick which system would be most useful to other people and had the most potential as a portfolio piece or a product.
+  - *What came back:* Claude pointed out that the assignment is to extend exactly one system. It compared the four on hosting limits (torch doesn't fit Render's 512 MB) and real-world usefulness, and recommended FitFindr with shape B.
+  - *What I decided:* FitFindr, shape B, on Render (Path A). Connecting real marketplace listings is the "next thing", not this unit.
+- **The build.**
+  - *What I asked for:* Claude writes the code and documentation, and I stay in control of every git add, commit and push. I wouldn't let it delete files on my machine or copy my API key into its workspace.
+  - *What came back:* Claude read the code and found four bad paths (no timeout, only rate limits retried, empty replies passing silently, exhausted retries crashing with a 500). It wrote the hardening layer in `generate.py`, the fault-injection switch, the structured log, the trial client, `run_capstone_trials.py` and `RUNNING.md`, and tested the failure paths from a clean clone with a dummy key.
+  - *What I did:* I set up the Render service myself, entered the API key there, and copied the log lines out of Render's Logs tab. Claude ran the cost runs and the before-trials against my deployed URL through the browser on my machine.
+- **The criteria.**
+  - *What I asked for:* Options for my five criteria.
+  - *What came back:* Claude declined to write them, since the instructions say not to, and instead asked me six questions about what I'd accept (how long a user could wait, what a failure message must say, how many missing log records are acceptable…), with the measured numbers I needed to answer.
+  - *What I decided:* Every target is mine: 25 s and 4 of 5 for timeouts, 4 of 4 for messages, no missing log records, 3 of 5 for bad input, and 9 of 10 under 10 s for warm requests, with the reasons. When I asked again, Claude turned my answers into sentences, marking the bits I still had to decide, and I rewrote them in my own words.
+- **The diagnosis and fix.** Claude diagnosed the misses from the logs and proposed three possible fixes; I chose the realistic stuck-model fault.
