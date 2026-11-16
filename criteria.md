@@ -131,3 +131,34 @@ Because model won't be called in this step, and any misses would mean a bug in t
      A number you missed stays where it is, gets diagnosed, and gets a fix
      attempted. That's where the points are.
      ───────────────────────────────────────────────────────────────────────── -->
+
+---
+
+# Capstone criteria
+
+Written before any capstone results existed. The system is FitFindr, deployed at https://fitfindr-anl0.onrender.com. Faults are switched on per request with the `X-FitFindr-Fault` header (see RUNNING.md). Times are `duration_ms` from the request log.
+
+**1. A stuck model fails within 25 seconds.**
+At least 4 of 5 requests sent with `X-FitFindr-Fault: timeout` return HTTP 503 with an error message (not a hang, not a 500), and each of those requests takes no more than 25 seconds, measured by `duration_ms` in the log.
+
+Why: after 15–30 seconds the user is just going to be wasting their time, so they have to get a response in that window. 25 s is in it. With the current settings the worst case is about 41 s (two 20 s attempts), so it can absolutely fail.
+
+**2. Each failure tells you what went wrong.**
+For all 4 fault types (`timeout`, `server_error`, `empty`, `rate_limit`), the 503's error message names the fault. The words checked are: timeout → "didn't answer" or "timed out"; server_error → "having trouble"; empty → "empty"; rate_limit → "rate limited".
+
+Why: if the user can't work out what kind of failure it was, then they can't decide whether to retry, whether to wait, or whether to modify their request. Every type has to name itself, because a user who hits the one vague message is just as stuck as if they were all vague.
+
+**3. No request goes unrecorded.**
+Every request sent during the trials (for all five criteria, including the failures and the 400s) has exactly one corresponding record in the request log (same `request_id`) with `status`, `outcome` and `duration_ms` all populated.
+
+Why: the wrong timeout message was only spotted because the failed request was logged. A failure that leaves no record at all is one you can never get to the bottom of, so missing one record is too many.
+
+**4. Bad input results in a 400, never a crash.**
+Of 5 malformed requests (no query, empty query, spaces only, a number, not JSON), at least 3 return HTTP 400 with a message telling you to send JSON with a `query` field, and none of the 5 returns a 500.
+
+Why: a caller who's sent the wrong thing should be told how to fix it. An empty query and non-JSON are pretty self-explanatory, so 3 of 5 is sufficient for the wording, but a crash is absolutely not acceptable.
+
+**5. Normal requests are quick.**
+At least 9 of 10 warm requests (i.e. not the very first request after the service has been idle for 15+ minutes) complete in under 10 s by `duration_ms`.
+
+Why: speed is far more important to the user than cost. The measured median is 5.9 s and one run took 14.2 s, so 10 s is a real bar and not a free pass.
