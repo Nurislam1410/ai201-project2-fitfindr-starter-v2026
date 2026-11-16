@@ -149,9 +149,98 @@ gunicorn serve:app
 | `gunicorn serve:app`, exactly | Not `-k gevent`, not `-k eventlet`, not wrapped for uvicorn. `mcp_client.call_tool` uses `asyncio.run()`, which won't start inside a running event loop, so an async worker breaks **every** MCP call — and only once you've deployed it |
 | The first request is slow | The free tier puts your app to sleep after about fifteen minutes of nothing. The next request wakes it up and waits for it — around a minute. Not a bug, and worth knowing before you demo it |
 
-`serve.py` ships with **no logging and no timing in it**, on purpose. You add
-that yourself in the follow-along, before you deploy — instrumenting first is
-the point of the session.
+### Capstone: how it is deployed, logged and tested
+
+FitFindr runs on **Render** (Path A), as a free-tier Web Service built from
+this repository.
+
+**Live URL:** `https://<fill in after first deploy>.onrender.com` — platform: Render, free instance (512 MB).
+
+**What the environment needs**
+
+| | |
+|---|---|
+| Python | 3.12 (pinned in `.python-version`, which Render reads). 3.11–3.13 all work; not 3.14 |
+| Dependencies | `requirements-lock.txt` — every package at the exact version tested. `requirements.txt` keeps the course's ranges |
+| Model files | None. The model is Gemini, called over HTTPS; nothing is downloaded |
+| Secrets | `GEMINI_API_KEY` — in `.env` locally, in Render's Environment tab when deployed. Never committed |
+
+**Render settings** (Dashboard → New → Web Service → connect this GitHub repo):
+
+| Setting | Value |
+|---|---|
+| Branch | `main` |
+| Build Command | `pip install -r requirements-lock.txt` |
+| Start Command | `gunicorn serve:app --timeout 180` |
+| Instance type | Free |
+| Environment → `GEMINI_API_KEY` | your key |
+| Environment → `AI201_CACHE` | `0` — a cached answer costs nothing, so with the cache on, the cost numbers would be wrong |
+| Environment → `FITFINDR_ALLOW_FAULT_HEADER` | `1` while testing the bad path; remove it afterwards |
+
+Why `--timeout 180`: gunicorn's default kills a worker after 30 s. A run that
+hits the rate limit legitimately waits longer than that (`generate.py` honours
+the service's "retry in N s"), and a killed worker answers with nothing at all
+— the exact failure this capstone is about. Keep the default sync worker (see
+the table above).
+
+**Check it's up**
+
+```bash
+curl https://<your-app>.onrender.com/health          # {"status":"ok"}
+curl -X POST https://<your-app>.onrender.com/ask \
+  -H 'Content-Type: application/json' \
+  -d '{"query": "vintage graphic tee under $30"}'
+```
+
+The first request after ~15 idle minutes takes about a minute while the
+instance wakes up. That's the free tier, not the app.
+
+**The same thing, on your own machine, with one command** (from a clean clone,
+after the setup at the top of this file):
+
+```bash
+gunicorn serve:app --timeout 180 -b 127.0.0.1:5000
+```
+
+(`python serve.py` also works; gunicorn is what Render runs, so it's the one to test.)
+
+**The log**
+
+Every `/ask` request — successes, `400`s for bad input, `503`s when the model
+fails, and `500`s — writes one JSON record with named fields to
+`logs/requests.jsonl`, and the same line to stdout prefixed `REQUESTLOG `.
+Render's disk is wiped when the instance sleeps, so on Render read the stdout
+copy in the dashboard's **Logs** tab and paste it into the README the same
+session. The fields are documented at the top of `requestlog.py`.
+
+**Running the trials** — `capstone_client.py` sends requests and saves every
+response to `results/capstone_client_<label>.jsonl`, so the record survives
+even when the host's log doesn't:
+
+```bash
+python capstone_client.py --url https://<your-app>.onrender.com --case happy -n 10
+python capstone_client.py --url https://<your-app>.onrender.com --case bad_input
+python capstone_client.py --url https://<your-app>.onrender.com --case fault --fault timeout
+```
+
+Leave off `--url` to hit `http://localhost:5000`.
+
+**Triggering failures on purpose.** `FITFINDR_FAULT` (an environment variable
+for the whole process) or the `X-FitFindr-Fault` header (one request, only when
+the service runs with `FITFINDR_ALLOW_FAULT_HEADER=1`) makes the model call
+fail in a chosen way:
+
+| Fault | What happens | Reaches Gemini? |
+|---|---|---|
+| `timeout` | every call is made with a ~1 ms time limit | yes, and is abandoned |
+| `server_error` | every call fails with a simulated `503` | no |
+| `flaky` | the first call of a run fails with a simulated `503`; the retry is real | the retry does |
+| `empty` | every call comes back with no text | no |
+| `rate_limit` | every call fails with a simulated `429` | no |
+
+Two more settings: `FITFINDR_MODEL_TIMEOUT` (seconds per model call, default
+`20`) and `FITFINDR_TRANSIENT_RETRIES` (extra tries for a 5xx or timeout,
+default `1`).
 
 ---
 
