@@ -475,3 +475,62 @@ output  109.8 tokens × $2.50 / 1,000,000 = $0.0002745
 ```
 
 *A hundred people a day*, one search each: 100 × $0.000363 = **$0.036 a day**, about **$1.09 a month** (× 30). On what I actually run today it's $0: the course key is on Gemini's free tier and Render's free instance costs nothing. The real limit at that volume is the free tier's 15 requests a minute, not money: each run is 2 calls, so about 7 runs a minute before `generate.py` starts pacing, and a burst of people at once would queue behind the one-at-a-time lock.
+
+**Run Log and Verdicts**
+
+*Run Log — Before.* Three trials, run back to back against the deployed service (https://fitfindr-anl0.onrender.com) on 16 Nov 2026, 07:11–07:20 UTC, after `criteria.md` was committed (`e1a5db1`, 07:10 UTC). Nothing was changed between trials: all three ran on the same gunicorn worker (pid 59, booted 07:11:05 by the redeploy that the criteria commit triggered). Each trial was the same 24 requests, sent one at a time from the browser on my machine, in this order: 10 normal queries (criterion 5), 5 × `X-FitFindr-Fault: timeout` (criterion 1), one each of `timeout` / `server_error` / `empty` / `rate_limit` (criterion 2), and the 5 malformed bodies (criterion 4). Criterion 3 is scored over all 24. Every response is in `results/capstone_m5_before_trials.csv`; the server's own log for the window, copied from Render's Logs tab, is `results/capstone_m5_before_render_log.txt`.
+
+| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
+|---|---|---|---|---|---|
+| 1. A stuck model fails within 25 s (503 + message) | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Each failure names itself (all 4 fault types) | 4 of 4 | 3/4 | 3/4 | 3/4 | MISSED |
+| 3. Every request has exactly one populated log record | 24 of 24 | 24/24 | 24/24 | 24/24 | MET |
+| 4. Bad input → 400 with "send JSON with a `query`", no 500 | ≥3 of 5, 0 × 500 | 5/5, 0 | 5/5, 0 | 5/5, 0 | MET |
+| 5. Warm requests finish under 10 s | 9 of 10 | 8/10 | 9/10 | 9/10 | MISSED |
+
+*Real output, criterion by criterion.* All `REQUESTLOG` lines are written by `requestlog.py::write()`, called from `serve.py::ask()`; the messages inside them come from `generate.py` (named per criterion).
+
+Criterion 1 — run 2, the first of the five forced timeouts (message from `generate.py::_explain`, set into the session by `agent.py::run_agent`). 503, 5,351 ms, one transient retry:
+
+```json
+REQUESTLOG {"ts": "2026-11-16T07:15:52.050Z", "request_id": "ac176ec5", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 5351, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 1, "rate_limit_retries": 0}
+```
+
+All 15 forced-timeout requests (5 per run) came back 503 in 3,976–5,675 ms — comfortably inside 25 s.
+
+Criterion 2 — run 3, one request per fault type. Three name their fault (`_explain_transient`, `_explain_empty`, and the retries-exhausted message at the end of `generate.py::generate`); the timeout does not — it says "Couldn't reach the model. Check your internet connection" (`_explain`), which contains neither "didn't answer" nor "timed out". Same result in all three runs:
+
+```json
+REQUESTLOG {"ts": "2026-11-16T07:19:20.757Z", "request_id": "c0c896a7", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4232, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+REQUESTLOG {"ts": "2026-11-16T07:19:25.052Z", "request_id": "5e3e188f", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "server_error", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model service is having trouble right now (503 UNAVAILABLE. The model is overloaded. Please try again later. [injected]; 2 tries). Nothing is wrong with your request — try again in a minute.", "failed_stage": "suggest_outfit", "duration_ms": 5033, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 1, "rate_limit_retries": 0}
+REQUESTLOG {"ts": "2026-11-16T07:19:30.146Z", "request_id": "ccb041dc", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "empty", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model sent back an empty reply. Try rewording the request, or try again in a minute.", "failed_stage": "suggest_outfit", "duration_ms": 4050, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+REQUESTLOG {"ts": "2026-11-16T07:19:34.331Z", "request_id": "01062a03", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "rate_limit", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model is rate limited and still was after 5 attempts. Wait a minute and try again — nothing is wrong with your request.", "failed_stage": "suggest_outfit", "duration_ms": 28866, "wait_ms": 0, "model_calls": 5, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 4}
+```
+
+Criterion 3 — matching the 72 `request_id`s the client received against the 72 `REQUESTLOG` records in the Render log (script run over the two files above):
+
+```
+records 72  unique 72  sent 72  missing set()  extra set()
+records with status/outcome/duration_ms unpopulated: []
+run 1: 24 / 24    run 2: 24 / 24    run 3: 24 / 24
+```
+
+Criterion 4 — run 1, all five malformed bodies (`serve.py::ask`, rejected before the agent runs). The `query` field shows what came in (`null` = absent or unparseable, `"42"` = the number, logged as text):
+
+```json
+REQUESTLOG {"ts": "2026-11-16T07:14:05.872Z", "request_id": "9c611298", "route": "/ask", "status": 400, "outcome": "bad_input", "query": null, "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+REQUESTLOG {"ts": "2026-11-16T07:14:05.937Z", "request_id": "e054c1c7", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+REQUESTLOG {"ts": "2026-11-16T07:14:06.033Z", "request_id": "d1563ce1", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "   ", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+REQUESTLOG {"ts": "2026-11-16T07:14:06.103Z", "request_id": "9318b87b", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "42", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+REQUESTLOG {"ts": "2026-11-16T07:14:06.165Z", "request_id": "92af86c0", "route": "/ask", "status": 400, "outcome": "bad_input", "query": null, "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+```
+
+Criterion 5 — run 1's two slow requests, with the line the pacer in `generate.py::_wait_for_slot` printed between the two model calls of the second one (fit cards shortened here; full text in the log file):
+
+```
+REQUESTLOG {"ts": "2026-11-16T07:11:15.836Z", "request_id": "1354125f", "route": "/ask", "status": 200, "outcome": "ok", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Living my best 2000s dream in this butterfly baby tee! 🦋 Gra…", "error": null, "failed_stage": null, "duration_ms": 17333, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 284, "output_tokens": 94, "transient_retries": 0, "rate_limit_retries": 0}
+  [rate limit] 15 requests used this minute. Waiting 20s. This is normal.
+REQUESTLOG {"ts": "2026-11-16T07:12:06.592Z", "request_id": "d7f8d80e", "route": "/ask", "status": 200, "outcome": "ok", "query": "cargo pants under $40", "wardrobe_items": 10, "fault": "", "selected_item": "lst_005", "output": "Fall texture of my dreams! 🤎 These rust corduroy wide-legs a…", "error": null, "failed_stage": null, "duration_ms": 26462, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 300, "output_tokens": 129, "transient_retries": 0, "rate_limit_retries": 0}
+```
+
+The 10 durations per run (ms) — run 1: 17,333 · 5,200 · 5,427 · 5,887 · 5,294 · 5,355 · 5,600 · **26,462** · 6,225 · 5,821; run 2: 6,396 · 5,373 · 5,514 · 7,401 · 6,645 · 5,940 · 6,069 · **21,256** · 6,430 · 6,759; run 3: 6,062 · 5,375 · 6,217 · 5,531 · 6,880 · 6,268 · 6,364 · **22,271** · 5,925 · 6,432.

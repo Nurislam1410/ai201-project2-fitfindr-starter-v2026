@@ -1,0 +1,538 @@
+127.0.0.1 - - [16/Nov/2026:07:11:04 +0000] "GET /health HTTP/1.1" 200 16 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[2026-11-16 07:11:05 +0000] [58] [INFO] Starting gunicorn 23.0.0
+[2026-11-16 07:11:05 +0000] [58] [INFO] Listening at: http://0.0.0.0:10000 (58)
+[2026-11-16 07:11:05 +0000] [58] [INFO] Using worker: sync
+[2026-11-16 07:11:05 +0000] [59] [INFO] Booting worker with pid: 59
+127.0.0.1 - - [16/Nov/2026:07:11:06 +0000] "HEAD / HTTP/1.1" 404 0 "-" "Go-http-client/1.1"
+[2026-11-16 07:11:14 +0000] [40] [INFO] Handling signal: term
+[2026-11-16 07:11:14 +0000] [41] [INFO] Worker exiting (pid: 41)
+[2026-11-16 07:11:15 +0000] [40] [INFO] Shutting down: Master
+==> Your service is live 🎉
+==> 
+127.0.0.1 - - [16/Nov/2026:07:11:15 +0000] "GET / HTTP/1.1" 404 207 "-" "Go-http-client/2.0"
+==> ///////////////////////////////////////////////////////////
+==> 
+==> Available at your primary URL https://fitfindr-anl0.onrender.com
+==> 
+==> ///////////////////////////////////////////////////////////
+[1] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+[2] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg jeans and chunky white sneakers for an effortless, nostalgi…
+[3] create_fit_card
+      in:  dict with keys: outfit
+      out: Living my best 2000s dream in this butterfly baby tee! 🦋 Grab it on Depop for just $18. Style it with baggy je…
+REQUESTLOG {"ts": "2026-11-16T07:11:15.836Z", "request_id": "1354125f", "route": "/ask", "status": 200, "outcome": "ok", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Living my best 2000s dream in this butterfly baby tee! 🦋 Grab it on Depop for just $18. Style it with baggy jeans and chunky sneakers for the ultimate off-duty nostalgic fit. ✨", "error": null, "failed_stage": null, "duration_ms": 17333, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 284, "output_tokens": 94, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:11:33 +0000] "POST /ask HTTP/1.1" 200 6402 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[4] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +3 more
+[5] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy dark wash jeans and chunky white sneakers for a classic, nostalgic stree…
+[6] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with this Y2K butterfly baby tee! 🦋 Grab it on Depop for just $18 before I change my mind. Style tip:…
+REQUESTLOG {"ts": "2026-11-16T07:11:33.261Z", "request_id": "9c741d08", "route": "/ask", "status": 200, "outcome": "ok", "query": "y2k baby tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Obsessed with this Y2K butterfly baby tee! 🦋 Grab it on Depop for just $18 before I change my mind. Style tip: pair it with baggy denim and chunky sneakers for the ultimate nostalgic fit. ✨", "error": null, "failed_stage": null, "duration_ms": 5200, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 295, "output_tokens": 105, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:11:38 +0000] "POST /ask HTTP/1.1" 200 5176 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[7] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 3 items: Corduroy Wide-Leg Pants — Rust, Low-Rise Cargo Pants — Khaki, Mesh Long-Sleeve Top — Black
+[8] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair your new rust corduroy pants with the fitted **white ribbed tank top** and layer on the **vintage black d…
+[9] create_fit_card
+      in:  dict with keys: outfit
+      out: Textured, retro vibes are calling! 🤎 Style these rust corduroy wide-legs with a ribbed white tank, a vintage b…
+REQUESTLOG {"ts": "2026-11-16T07:11:38.578Z", "request_id": "ba2312e4", "route": "/ask", "status": 200, "outcome": "ok", "query": "cargo pants under $40", "wardrobe_items": 10, "fault": "", "selected_item": "lst_005", "output": "Textured, retro vibes are calling! 🤎 Style these rust corduroy wide-legs with a ribbed white tank, a vintage black denim jacket, and chunky sneakers for the ultimate effortless streetwear fit. Grab them on Depop for just $32!", "error": null, "failed_stage": null, "duration_ms": 5427, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 301, "output_tokens": 115, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:11:44 +0000] "POST /ask HTTP/1.1" 200 4130 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[10] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: 90s Track Jacket — Navy/White Stripe, Denim Jacket — Light Wash, Cropped, High-Waisted Denim Shorts — Cutoff … +3 more
+[11] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the 90s navy and white track jacket with the white ribbed tank top and baggy straight-leg dark wash jeans…
+[12] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with this 90s navy and white track jacket! 💙🤍 Style it with a white ribbed tank, baggy dark wash jean…
+REQUESTLOG {"ts": "2026-11-16T07:11:44.072Z", "request_id": "ee804c75", "route": "/ask", "status": 200, "outcome": "ok", "query": "denim jacket", "wardrobe_items": 10, "fault": "", "selected_item": "lst_004", "output": "Obsessed with this 90s navy and white track jacket! 💙🤍 Style it with a white ribbed tank, baggy dark wash jeans, and chunky sneakers for the ultimate retro streetwear vibe. Grab it on Poshmark for just $45 before someone else does! ✨", "error": null, "failed_stage": null, "duration_ms": 5887, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 294, "output_tokens": 108, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:11:49 +0000] "POST /ask HTTP/1.1" 200 5303 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[13] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +4 more
+[14] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair your new Y2K baby tee with the baggy straight-leg dark wash jeans and chunky white sneakers for an effort…
+[15] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with this butterfly baby tee! 🦋 Grab it on Depop for just $18 before it’s gone. Style it with baggy d…
+REQUESTLOG {"ts": "2026-11-16T07:11:50.028Z", "request_id": "87aee1bb", "route": "/ask", "status": 200, "outcome": "ok", "query": "graphic tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Obsessed with this butterfly baby tee! 🦋 Grab it on Depop for just $18 before it’s gone. Style it with baggy dark wash denim, chunky sneakers, and a black crossbody for the ultimate effortless throwback fit. ✨", "error": null, "failed_stage": null, "duration_ms": 5294, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 288, "output_tokens": 100, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:11:55 +0000] "POST /ask HTTP/1.1" 200 5605 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[16] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+[17] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair your new Y2K baby tee with your baggy straight-leg jeans and chunky white sneakers for an effortless, thr…
+[18] create_fit_card
+      in:  dict with keys: outfit
+      out: Butterfly effect in real life 🦋 Obsessed with this Y2K baby tee! Grabbed it on Depop for just $18. Style it wi…
+REQUESTLOG {"ts": "2026-11-16T07:11:55.500Z", "request_id": "fbee1a21", "route": "/ask", "status": 200, "outcome": "ok", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Butterfly effect in real life 🦋 Obsessed with this Y2K baby tee! Grabbed it on Depop for just $18. Style it with baggy jeans and chunky sneakers, then throw on a black denim jacket when it gets chilly. 🫶✨", "error": null, "failed_stage": null, "duration_ms": 5355, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 288, "output_tokens": 104, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:12:00 +0000] "POST /ask HTTP/1.1" 200 6466 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[19] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +3 more
+[20] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg dark wash jeans and chunky white sneakers for a classic, no…
+[21] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with this butterfly baby tee! 🦋✨ Just dropped it on Depop for $18. Style it with baggy dark-wash jean…
+REQUESTLOG {"ts": "2026-11-16T07:12:00.927Z", "request_id": "fd6d2950", "route": "/ask", "status": 200, "outcome": "ok", "query": "y2k baby tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Obsessed with this butterfly baby tee! 🦋✨ Just dropped it on Depop for $18. Style it with baggy dark-wash jeans, chunky sneakers, and a vintage denim jacket for the ultimate 2000s streetwear fit. Grab it before it’s gone!", "error": null, "failed_stage": null, "duration_ms": 5600, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 296, "output_tokens": 118, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:12:06 +0000] "POST /ask HTTP/1.1" 200 5222 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[22] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 3 items: Corduroy Wide-Leg Pants — Rust, Low-Rise Cargo Pants — Khaki, Mesh Long-Sleeve Top — Black
+[23] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair your new rust corduroy pants with the fitted **white ribbed tank top** and layer on the **vintage black d…
+  [rate limit] 15 requests used this minute. Waiting 20s. This is normal.
+[24] create_fit_card
+      in:  dict with keys: outfit
+      out: Fall texture of my dreams! 🤎 These rust corduroy wide-legs are giving all the retro vibes. Style them with a r…
+REQUESTLOG {"ts": "2026-11-16T07:12:06.592Z", "request_id": "d7f8d80e", "route": "/ask", "status": 200, "outcome": "ok", "query": "cargo pants under $40", "wardrobe_items": 10, "fault": "", "selected_item": "lst_005", "output": "Fall texture of my dreams! 🤎 These rust corduroy wide-legs are giving all the retro vibes. Style them with a ribbed white tank, vintage black denim jacket, chunky sneaks, and a crossbody for the ultimate effortless streetwear fit. Grab them on Depop for just $32 before they’re gone! ✨", "error": null, "failed_stage": null, "duration_ms": 26462, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 300, "output_tokens": 129, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:12:33 +0000] "POST /ask HTTP/1.1" 200 4197 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[25] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: 90s Track Jacket — Navy/White Stripe, Denim Jacket — Light Wash, Cropped, High-Waisted Denim Shorts — Cutoff … +3 more
+[26] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the 90s track jacket with the white ribbed tank top and baggy straight-leg jeans for an effortless, sport…
+[27] create_fit_card
+      in:  dict with keys: outfit
+      out: Nothing beats a good 90s track jacket to instantly pull a fit together. 🤌 Grabbed this navy and white stripe b…
+REQUESTLOG {"ts": "2026-11-16T07:12:33.243Z", "request_id": "2882c4db", "route": "/ask", "status": 200, "outcome": "ok", "query": "denim jacket", "wardrobe_items": 10, "fault": "", "selected_item": "lst_004", "output": "Nothing beats a good 90s track jacket to instantly pull a fit together. 🤌 Grabbed this navy and white stripe beauty for just $45 over on Poshmark! Style it super casual with baggy denim and a tank, or dress it up with khaki trousers for that ultimate sporty-meets-minimalist vibe. 👟✨", "error": null, "failed_stage": null, "duration_ms": 6225, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 325, "output_tokens": 152, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:12:39 +0000] "POST /ask HTTP/1.1" 200 5510 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[28] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +4 more
+[29] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg jeans and chunky white sneakers for an authentic streetwear…
+[30] create_fit_card
+      in:  dict with keys: outfit
+      out: Channeling major 2000s energy with this butterfly baby tee! 🦋 Grab it on Depop for just $18. Style it with bag…
+REQUESTLOG {"ts": "2026-11-16T07:12:39.536Z", "request_id": "e98f1486", "route": "/ask", "status": 200, "outcome": "ok", "query": "graphic tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Channeling major 2000s energy with this butterfly baby tee! 🦋 Grab it on Depop for just $18. Style it with baggy jeans and chunky sneakers, or layer a black denim jacket over top for the ultimate retro fit. ✨", "error": null, "failed_stage": null, "duration_ms": 5821, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 305, "output_tokens": 121, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:12:45 +0000] "POST /ask HTTP/1.1" 200 5687 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[31] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:13:08.061Z", "request_id": "d0a16115", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4733, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:13:12 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[32] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:13:12.864Z", "request_id": "101e4710", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4034, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:13:16 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[33] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:13:16.989Z", "request_id": "b102ccd7", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4809, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:13:21 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[34] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:13:21.904Z", "request_id": "13d429ee", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4585, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:13:26 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[35] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:13:26.614Z", "request_id": "f3c8454e", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 3976, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:13:30 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[36] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:13:30.711Z", "request_id": "d798224d", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 3978, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:13:34 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[37] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+  [transient] 503 UNAVAILABLE. The model is overloaded. Please try again later. [injected] — retrying in 1s (retry 1 of 1).
+REQUESTLOG {"ts": "2026-11-16T07:13:34.762Z", "request_id": "25b7c2c6", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "server_error", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model service is having trouble right now (503 UNAVAILABLE. The model is overloaded. Please try again later. [injected]; 2 tries). Nothing is wrong with your request — try again in a minute.", "failed_stage": "suggest_outfit", "duration_ms": 5720, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 1, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:13:40 +0000] "POST /ask HTTP/1.1" 503 6208 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[38] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:13:40.657Z", "request_id": "59dc5c7c", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "empty", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model sent back an empty reply. Try rewording the request, or try again in a minute.", "failed_stage": "suggest_outfit", "duration_ms": 4127, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:13:44 +0000] "POST /ask HTTP/1.1" 503 6090 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[39] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+  [rate limit] service pushed back. Waiting 2s (attempt 1 of 5). This is the limiter doing its job, not a bug.
+  [rate limit] service pushed back. Waiting 2s (attempt 2 of 5). This is the limiter doing its job, not a bug.
+  [rate limit] service pushed back. Waiting 4s (attempt 3 of 5). This is the limiter doing its job, not a bug.
+  [rate limit] service pushed back. Waiting 8s (attempt 4 of 5). This is the limiter doing its job, not a bug.
+REQUESTLOG {"ts": "2026-11-16T07:13:44.851Z", "request_id": "95299342", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "rate_limit", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model is rate limited and still was after 5 attempts. Wait a minute and try again — nothing is wrong with your request.", "failed_stage": "suggest_outfit", "duration_ms": 20942, "wait_ms": 0, "model_calls": 5, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 4}
+127.0.0.1 - - [16/Nov/2026:07:14:05 +0000] "POST /ask HTTP/1.1" 503 6136 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:14:05.872Z", "request_id": "9c611298", "route": "/ask", "status": 400, "outcome": "bad_input", "query": null, "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:14:05 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:14:05.937Z", "request_id": "e054c1c7", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:14:05 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:14:06.033Z", "request_id": "d1563ce1", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "   ", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:14:06 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:14:06.103Z", "request_id": "9318b87b", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "42", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:14:06 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:14:06.165Z", "request_id": "92af86c0", "route": "/ask", "status": 400, "outcome": "bad_input", "query": null, "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:14:06 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[40] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+[41] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg jeans and chunky white sneakers for an effortless, nostalgi…
+[42] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with this Y2K butterfly baby tee! 🦋 Style it with baggy jeans, chunky sneakers, and a vintage denim j…
+REQUESTLOG {"ts": "2026-11-16T07:14:33.214Z", "request_id": "4733f0c4", "route": "/ask", "status": 200, "outcome": "ok", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Obsessed with this Y2K butterfly baby tee! 🦋 Style it with baggy jeans, chunky sneakers, and a vintage denim jacket for the ultimate nostalgic fit. Grab it on Depop for just $18 before it’s gone!", "error": null, "failed_stage": null, "duration_ms": 6396, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 293, "output_tokens": 105, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:14:39 +0000] "POST /ask HTTP/1.1" 200 6471 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[43] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +3 more
+[44] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg jeans and black combat boots for an authentic early-2000s s…
+[45] create_fit_card
+      in:  dict with keys: outfit
+      out: Channeling total 2000s energy with this butterfly baby tee! 🦋 Style it with baggy denim, combat boots, and a l…
+REQUESTLOG {"ts": "2026-11-16T07:14:39.669Z", "request_id": "6f905ccd", "route": "/ask", "status": 200, "outcome": "ok", "query": "y2k baby tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Channeling total 2000s energy with this butterfly baby tee! 🦋 Style it with baggy denim, combat boots, and a leather jacket for the ultimate nostalgic fit. Grab it on Depop for just $18 before it’s gone!", "error": null, "failed_stage": null, "duration_ms": 5373, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 312, "output_tokens": 128, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:14:45 +0000] "POST /ask HTTP/1.1" 200 5266 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[46] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 3 items: Corduroy Wide-Leg Pants — Rust, Low-Rise Cargo Pants — Khaki, Mesh Long-Sleeve Top — Black
+[47] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the rust corduroy wide-leg pants with the fitted white ribbed tank top for a balanced silhouette, and lay…
+[48] create_fit_card
+      in:  dict with keys: outfit
+      out: Fall is calling and these rust corduroy pants are the absolute vibe! 🍂 Style them with a fitted white tank and…
+REQUESTLOG {"ts": "2026-11-16T07:14:45.176Z", "request_id": "f73b97a4", "route": "/ask", "status": 200, "outcome": "ok", "query": "cargo pants under $40", "wardrobe_items": 10, "fault": "", "selected_item": "lst_005", "output": "Fall is calling and these rust corduroy pants are the absolute vibe! 🍂 Style them with a fitted white tank and a vintage black jacket for the ultimate streetwear fit. Grab this gorgeous pair for just $32 on Depop before they’re gone! ✨", "error": null, "failed_stage": null, "duration_ms": 5514, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 294, "output_tokens": 110, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:14:50 +0000] "POST /ask HTTP/1.1" 200 4139 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[49] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: 90s Track Jacket — Navy/White Stripe, Denim Jacket — Light Wash, Cropped, High-Waisted Denim Shorts — Cutoff … +3 more
+[50] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Layer the 90s track jacket over the white ribbed tank top and pair them with your baggy straight-leg jeans and…
+[51] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with this navy and white 90s track jacket! 💙 Layer it over a white tank and baggy jeans for retro str…
+REQUESTLOG {"ts": "2026-11-16T07:14:50.760Z", "request_id": "1c4eaf9d", "route": "/ask", "status": 200, "outcome": "ok", "query": "denim jacket", "wardrobe_items": 10, "fault": "", "selected_item": "lst_004", "output": "Obsessed with this navy and white 90s track jacket! 💙 Layer it over a white tank and baggy jeans for retro streetwear, or style it with a cropped hoodie and combat boots for a sporty-grunge vibe. Grab it on Poshmark for just $45 before it’s gone!", "error": null, "failed_stage": null, "duration_ms": 7401, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 329, "output_tokens": 149, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:14:58 +0000] "POST /ask HTTP/1.1" 200 5482 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[52] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +4 more
+[53] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg jeans and chunky white sneakers for an effortless, nostalgi…
+[54] create_fit_card
+      in:  dict with keys: outfit
+      out: Living for this butterfly baby tee! 🦋✨ Grab it on Depop for just $18. Pair it with baggy jeans, chunky sneaker…
+REQUESTLOG {"ts": "2026-11-16T07:14:58.366Z", "request_id": "b719665e", "route": "/ask", "status": 200, "outcome": "ok", "query": "graphic tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Living for this butterfly baby tee! 🦋✨ Grab it on Depop for just $18. Pair it with baggy jeans, chunky sneakers, and a brown belt for the ultimate effortless Y2K fit.", "error": null, "failed_stage": null, "duration_ms": 6645, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 283, "output_tokens": 89, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:15:05 +0000] "POST /ask HTTP/1.1" 200 5531 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[55] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+[56] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg jeans and chunky white sneakers for an effortless, nostalgi…
+[57] create_fit_card
+      in:  dict with keys: outfit
+      out: Living for this butterfly baby tee! 🦋✨ Pair it with baggy jeans, a brown belt, and chunky sneakers, then layer…
+REQUESTLOG {"ts": "2026-11-16T07:15:05.127Z", "request_id": "4516734b", "route": "/ask", "status": 200, "outcome": "ok", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Living for this butterfly baby tee! 🦋✨ Pair it with baggy jeans, a brown belt, and chunky sneakers, then layer with a zip hoodie and crossbody for the ultimate 2000s fit. Grab this Y2K gem for just $18 over on Depop!", "error": null, "failed_stage": null, "duration_ms": 5940, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 301, "output_tokens": 123, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:15:11 +0000] "POST /ask HTTP/1.1" 200 6511 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[58] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +3 more
+[59] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg jeans and chunky white sneakers for an authentic 2000s stre…
+[60] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with this Y2K butterfly baby tee! 🦋✨ Grab it on Depop for just $18. Pair it with baggy jeans and chun…
+REQUESTLOG {"ts": "2026-11-16T07:15:11.170Z", "request_id": "ce4f964e", "route": "/ask", "status": 200, "outcome": "ok", "query": "y2k baby tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Obsessed with this Y2K butterfly baby tee! 🦋✨ Grab it on Depop for just $18. Pair it with baggy jeans and chunky sneakers, then throw on a vintage black denim jacket when it gets chilly. Link in bio to shop!", "error": null, "failed_stage": null, "duration_ms": 6069, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 300, "output_tokens": 116, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:15:17 +0000] "POST /ask HTTP/1.1" 200 5208 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[61] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 3 items: Corduroy Wide-Leg Pants — Rust, Low-Rise Cargo Pants — Khaki, Mesh Long-Sleeve Top — Black
+  [rate limit] 15 requests used this minute. Waiting 15s. This is normal.
+[62] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the rust corduroy wide-leg pants with the fitted white ribbed tank top and layer the vintage black denim …
+[63] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with the retro texture of these rust corduroy pants! ✨ Style them with a ribbed tank, vintage black d…
+REQUESTLOG {"ts": "2026-11-16T07:15:17.405Z", "request_id": "46111adb", "route": "/ask", "status": 200, "outcome": "ok", "query": "cargo pants under $40", "wardrobe_items": 10, "fault": "", "selected_item": "lst_005", "output": "Obsessed with the retro texture of these rust corduroy pants! ✨ Style them with a ribbed tank, vintage black denim jacket, and chunky sneakers for the ultimate everyday streetwear fit. Grab this gorgeous pair on Depop for just $32 before they’re gone!", "error": null, "failed_stage": null, "duration_ms": 21256, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 292, "output_tokens": 109, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:15:38 +0000] "POST /ask HTTP/1.1" 200 4127 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[64] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: 90s Track Jacket — Navy/White Stripe, Denim Jacket — Light Wash, Cropped, High-Waisted Denim Shorts — Cutoff … +3 more
+[65] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the 90s navy and white track jacket with the white ribbed tank top and baggy straight-leg dark wash jeans…
+[66] create_fit_card
+      in:  dict with keys: outfit
+      out: Scored this ultimate 90s navy and white track jacket for just $45! 🏃💨 Style it with a white ribbed tank, baggy…
+REQUESTLOG {"ts": "2026-11-16T07:15:38.737Z", "request_id": "517872d6", "route": "/ask", "status": 200, "outcome": "ok", "query": "denim jacket", "wardrobe_items": 10, "fault": "", "selected_item": "lst_004", "output": "Scored this ultimate 90s navy and white track jacket for just $45! 🏃💨 Style it with a white ribbed tank, baggy dark wash denim, and chunky white sneaks, then finish with a black crossbody for the ultimate retro-streetwear fit. Grab it on Poshmark before I change my mind!", "error": null, "failed_stage": null, "duration_ms": 6430, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 296, "output_tokens": 121, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:15:45 +0000] "POST /ask HTTP/1.1" 200 5347 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[67] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +4 more
+[68] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg dark wash jeans and chunky white sneakers for a classic, no…
+[69] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with this Y2K butterfly baby tee! 🦋✨ Style it with baggy jeans and sneakers for a classic streetwear …
+REQUESTLOG {"ts": "2026-11-16T07:15:45.231Z", "request_id": "678b3a31", "route": "/ask", "status": 200, "outcome": "ok", "query": "graphic tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Obsessed with this Y2K butterfly baby tee! 🦋✨ Style it with baggy jeans and sneakers for a classic streetwear vibe, or throw on a black denim jacket and combat boots to grunge it up. Grab it on Depop for just $18 before it’s gone! 🛒💖", "error": null, "failed_stage": null, "duration_ms": 6759, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 301, "output_tokens": 125, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:15:51 +0000] "POST /ask HTTP/1.1" 200 5716 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[70] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+  [transient] the model call timed out — retrying in 1s (retry 1 of 1).
+REQUESTLOG {"ts": "2026-11-16T07:15:52.050Z", "request_id": "ac176ec5", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 5351, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 1, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:15:57 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[71] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:15:57.467Z", "request_id": "2481a4ab", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4417, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:01 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[72] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:16:01.963Z", "request_id": "c17ddf12", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4228, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:06 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+==> Detected service running on port 10000
+==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+[73] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:16:06.354Z", "request_id": "90d656e9", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4145, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:10 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[74] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:16:10.577Z", "request_id": "5ca74863", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4720, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:15 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[75] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:16:15.370Z", "request_id": "2684cfbf", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4920, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:20 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[76] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+  [transient] 503 UNAVAILABLE. The model is overloaded. Please try again later. [injected] — retrying in 1s (retry 1 of 1).
+REQUESTLOG {"ts": "2026-11-16T07:16:20.392Z", "request_id": "24c726ca", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "server_error", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model service is having trouble right now (503 UNAVAILABLE. The model is overloaded. Please try again later. [injected]; 2 tries). Nothing is wrong with your request — try again in a minute.", "failed_stage": "suggest_outfit", "duration_ms": 5491, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 1, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:25 +0000] "POST /ask HTTP/1.1" 503 6208 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[77] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:16:25.946Z", "request_id": "9c6501d9", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "empty", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model sent back an empty reply. Try rewording the request, or try again in a minute.", "failed_stage": "suggest_outfit", "duration_ms": 4139, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:30 +0000] "POST /ask HTTP/1.1" 503 6090 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[78] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+  [rate limit] 15 requests used this minute. Waiting 2s. This is normal.
+  [rate limit] service pushed back. Waiting 2s (attempt 1 of 5). This is the limiter doing its job, not a bug.
+  [rate limit] 15 requests used this minute. Waiting 4s. This is normal.
+  [rate limit] service pushed back. Waiting 2s (attempt 2 of 5). This is the limiter doing its job, not a bug.
+  [rate limit] service pushed back. Waiting 4s (attempt 3 of 5). This is the limiter doing its job, not a bug.
+  [rate limit] service pushed back. Waiting 8s (attempt 4 of 5). This is the limiter doing its job, not a bug.
+REQUESTLOG {"ts": "2026-11-16T07:16:30.149Z", "request_id": "828c3731", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "rate_limit", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model is rate limited and still was after 5 attempts. Wait a minute and try again — nothing is wrong with your request.", "failed_stage": "suggest_outfit", "duration_ms": 27241, "wait_ms": 0, "model_calls": 5, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 4}
+127.0.0.1 - - [16/Nov/2026:07:16:57 +0000] "POST /ask HTTP/1.1" 503 6136 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:16:57.510Z", "request_id": "677c4d32", "route": "/ask", "status": 400, "outcome": "bad_input", "query": null, "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:57 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:16:57.570Z", "request_id": "74f1ea5b", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:57 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:16:57.638Z", "request_id": "62997d0b", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "   ", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:57 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:16:57.714Z", "request_id": "533eb1cc", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "42", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:57 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:16:57.780Z", "request_id": "a7148b6b", "route": "/ask", "status": 400, "outcome": "bad_input", "query": null, "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:16:57 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[79] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+[80] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy dark wash jeans and chunky white sneakers for an effortless, nostalgic s…
+[81] create_fit_card
+      in:  dict with keys: outfit
+      out: Found the ultimate Y2K butterfly baby tee for just $18! 🦋 Style it with baggy dark denim, chunky sneakers, and…
+REQUESTLOG {"ts": "2026-11-16T07:17:38.245Z", "request_id": "a4dc6401", "route": "/ask", "status": 200, "outcome": "ok", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Found the ultimate Y2K butterfly baby tee for just $18! 🦋 Style it with baggy dark denim, chunky sneakers, and a vintage jacket for that effortless 2000s streetwear vibe. Grab it now on Depop before it’s gone!", "error": null, "failed_stage": null, "duration_ms": 6062, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 294, "output_tokens": 112, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:17:44 +0000] "POST /ask HTTP/1.1" 200 6489 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[82] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +3 more
+[83] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg jeans and chunky white sneakers for an effortless, nostalgi…
+[84] create_fit_card
+      in:  dict with keys: outfit
+      out: Butterfly print and major Y2K nostalgia! ✨ Grab this baby tee on Depop for just $18. Pair it with baggy jeans …
+REQUESTLOG {"ts": "2026-11-16T07:17:44.464Z", "request_id": "9acd33a0", "route": "/ask", "status": 200, "outcome": "ok", "query": "y2k baby tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Butterfly print and major Y2K nostalgia! ✨ Grab this baby tee on Depop for just $18. Pair it with baggy jeans and chunky sneakers, or layer up with a vintage jacket for the ultimate effortless street style.", "error": null, "failed_stage": null, "duration_ms": 5375, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 322, "output_tokens": 131, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:17:49 +0000] "POST /ask HTTP/1.1" 200 5314 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[85] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 3 items: Corduroy Wide-Leg Pants — Rust, Low-Rise Cargo Pants — Khaki, Mesh Long-Sleeve Top — Black
+[86] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the rust corduroy wide-leg pants with the fitted **white ribbed tank top** and layer the **vintage black …
+[87] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with the rich texture of these rust corduroy wide-legs! 🍂 Style them with a fitted white tank, vintag…
+REQUESTLOG {"ts": "2026-11-16T07:17:49.995Z", "request_id": "c1ea4f92", "route": "/ask", "status": 200, "outcome": "ok", "query": "cargo pants under $40", "wardrobe_items": 10, "fault": "", "selected_item": "lst_005", "output": "Obsessed with the rich texture of these rust corduroy wide-legs! 🍂 Style them with a fitted white tank, vintage black denim, and chunky sneakers for the ultimate effortless street fit. Grab this gorgeous pair for just $32 over on Depop before they’re gone! ✨", "error": null, "failed_stage": null, "duration_ms": 6217, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 300, "output_tokens": 122, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:17:56 +0000] "POST /ask HTTP/1.1" 200 4156 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[88] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: 90s Track Jacket — Navy/White Stripe, Denim Jacket — Light Wash, Cropped, High-Waisted Denim Shorts — Cutoff … +3 more
+[89] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the 90s navy and white track jacket with the white ribbed tank top and baggy straight-leg dark wash jeans…
+[90] create_fit_card
+      in:  dict with keys: outfit
+      out: Scored this vintage 90s navy track jacket and I'm obsessed! 🤌 Style it with a white ribbed tank, baggy dark wa…
+REQUESTLOG {"ts": "2026-11-16T07:17:56.282Z", "request_id": "e027d6c8", "route": "/ask", "status": 200, "outcome": "ok", "query": "denim jacket", "wardrobe_items": 10, "fault": "", "selected_item": "lst_004", "output": "Scored this vintage 90s navy track jacket and I'm obsessed! 🤌 Style it with a white ribbed tank, baggy dark wash denim, and chunky sneakers for the ultimate retro streetwear fit. Grab it on Poshmark for just $45 before I change my mind! 🛒✨", "error": null, "failed_stage": null, "duration_ms": 5531, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 295, "output_tokens": 114, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:18:01 +0000] "POST /ask HTTP/1.1" 200 5305 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[91] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +4 more
+[92] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair your new Y2K butterfly baby tee with your baggy dark wash jeans and chunky white sneakers for an effortle…
+[93] create_fit_card
+      in:  dict with keys: outfit
+      out: Found my ultimate Y2K aesthetic! 🦋✨ This adorable butterfly baby tee is giving total 2000s vibes and is up on …
+REQUESTLOG {"ts": "2026-11-16T07:18:01.902Z", "request_id": "adf91a3a", "route": "/ask", "status": 200, "outcome": "ok", "query": "graphic tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Found my ultimate Y2K aesthetic! 🦋✨ This adorable butterfly baby tee is giving total 2000s vibes and is up on my Depop for just $18. Pair it with baggy jeans and chunky sneakers for the easiest nostalgic fit. Grab it before it’s gone!", "error": null, "failed_stage": null, "duration_ms": 6880, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 285, "output_tokens": 109, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:18:08 +0000] "POST /ask HTTP/1.1" 200 5622 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[94] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+[95] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the Y2K baby tee with your baggy straight-leg jeans and black combat boots for an effortless, nostalgic s…
+[96] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with this Y2K butterfly baby tee! 🦋 Pair it with baggy jeans, combat boots, and a vintage denim jacke…
+REQUESTLOG {"ts": "2026-11-16T07:18:08.989Z", "request_id": "845b9201", "route": "/ask", "status": 200, "outcome": "ok", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Obsessed with this Y2K butterfly baby tee! 🦋 Pair it with baggy jeans, combat boots, and a vintage denim jacket for the ultimate nostalgic street fit. Grab it on Depop for just $18 before it’s gone!", "error": null, "failed_stage": null, "duration_ms": 6268, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 294, "output_tokens": 107, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:18:15 +0000] "POST /ask HTTP/1.1" 200 6472 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[97] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +3 more
+[98] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair your new Y2K butterfly baby tee with your baggy straight-leg dark wash jeans and chunky white sneakers fo…
+[99] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with this Y2K butterfly baby tee! 🦋✨ Grab it now for just $18 on Depop. Pair it with baggy dark wash …
+REQUESTLOG {"ts": "2026-11-16T07:18:15.342Z", "request_id": "3f44e006", "route": "/ask", "status": 200, "outcome": "ok", "query": "y2k baby tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Obsessed with this Y2K butterfly baby tee! 🦋✨ Grab it now for just $18 on Depop. Pair it with baggy dark wash denim and chunky sneakers for the ultimate 2000s streetwear fit.", "error": null, "failed_stage": null, "duration_ms": 6364, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 293, "output_tokens": 104, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:18:21 +0000] "POST /ask HTTP/1.1" 200 5142 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[100] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 3 items: Corduroy Wide-Leg Pants — Rust, Low-Rise Cargo Pants — Khaki, Mesh Long-Sleeve Top — Black
+[101] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the rust corduroy wide-leg pants with the fitted white ribbed tank top and layer the vintage black denim …
+  [rate limit] 15 requests used this minute. Waiting 16s. This is normal.
+[102] create_fit_card
+      in:  dict with keys: outfit
+      out: Obsessed with the texture on these rust corduroy wide-leg pants! 🤎 Style them with a fitted white ribbed tank,…
+REQUESTLOG {"ts": "2026-11-16T07:18:21.903Z", "request_id": "c2f84c66", "route": "/ask", "status": 200, "outcome": "ok", "query": "cargo pants under $40", "wardrobe_items": 10, "fault": "", "selected_item": "lst_005", "output": "Obsessed with the texture on these rust corduroy wide-leg pants! 🤎 Style them with a fitted white ribbed tank, vintage black denim jacket, and chunky sneakers for the ultimate retro streetwear fit. Grab them on Depop for just $32 before they’re gone! ✨", "error": null, "failed_stage": null, "duration_ms": 22271, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 294, "output_tokens": 115, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:18:44 +0000] "POST /ask HTTP/1.1" 200 4149 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[103] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 6 items: 90s Track Jacket — Navy/White Stripe, Denim Jacket — Light Wash, Cropped, High-Waisted Denim Shorts — Cutoff … +3 more
+[104] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair the 90s navy and white track jacket with the white ribbed tank top and baggy dark wash straight-leg jeans…
+[105] create_fit_card
+      in:  dict with keys: outfit
+      out: Scored the ultimate 90s navy and white track jacket! ✨ Style it with a ribbed tank, baggy dark denim, and chun…
+REQUESTLOG {"ts": "2026-11-16T07:18:44.235Z", "request_id": "87ea8575", "route": "/ask", "status": 200, "outcome": "ok", "query": "denim jacket", "wardrobe_items": 10, "fault": "", "selected_item": "lst_004", "output": "Scored the ultimate 90s navy and white track jacket! ✨ Style it with a ribbed tank, baggy dark denim, and chunky sneakers for the easiest retro streetwear fit. Grab this gem on Poshmark for just $45 before it’s gone! 👟💙", "error": null, "failed_stage": null, "duration_ms": 5925, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 294, "output_tokens": 108, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:18:50 +0000] "POST /ask HTTP/1.1" 200 5294 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[106] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 7 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +4 more
+[107] suggest_outfit
+      in:  dict with keys: item, wardrobe_empty
+      out: Pair your new Y2K butterfly baby tee with your baggy dark wash jeans and chunky white sneakers for an effortle…
+[108] create_fit_card
+      in:  dict with keys: outfit
+      out: Butterflies are back and so is the year 2000! 🦋 Grab this cute Y2K baby tee on Depop for just $18. Style it wi…
+REQUESTLOG {"ts": "2026-11-16T07:18:50.222Z", "request_id": "20a73631", "route": "/ask", "status": 200, "outcome": "ok", "query": "graphic tee", "wardrobe_items": 10, "fault": "", "selected_item": "lst_002", "output": "Butterflies are back and so is the year 2000! 🦋 Grab this cute Y2K baby tee on Depop for just $18. Style it with baggy jeans and chunky sneakers for the ultimate nostalgic street fit. Link in bio to shop!", "error": null, "failed_stage": null, "duration_ms": 6432, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 285, "output_tokens": 103, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:18:56 +0000] "POST /ask HTTP/1.1" 200 5578 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[109] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+  [transient] the model call timed out — retrying in 1s (retry 1 of 1).
+REQUESTLOG {"ts": "2026-11-16T07:18:56.721Z", "request_id": "06e8cbc8", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 5675, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 1, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:19:02 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[110] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:19:02.459Z", "request_id": "1714ad27", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4329, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:19:06 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[111] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:19:07.073Z", "request_id": "f6cc7680", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 5028, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:19:12 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[112] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:19:12.230Z", "request_id": "8442b1ea", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4067, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:19:16 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[113] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:19:16.426Z", "request_id": "3e27b764", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4266, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:19:20 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[114] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:19:20.757Z", "request_id": "c0c896a7", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "timeout", "selected_item": "lst_002", "output": null, "error": "Model unavailable: Couldn't reach the model. Check your internet connection and try again.", "failed_stage": "suggest_outfit", "duration_ms": 4232, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:19:24 +0000] "POST /ask HTTP/1.1" 503 6075 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[115] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+  [transient] 503 UNAVAILABLE. The model is overloaded. Please try again later. [injected] — retrying in 1s (retry 1 of 1).
+REQUESTLOG {"ts": "2026-11-16T07:19:25.052Z", "request_id": "5e3e188f", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "server_error", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model service is having trouble right now (503 UNAVAILABLE. The model is overloaded. Please try again later. [injected]; 2 tries). Nothing is wrong with your request — try again in a minute.", "failed_stage": "suggest_outfit", "duration_ms": 5033, "wait_ms": 0, "model_calls": 2, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 1, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:19:30 +0000] "POST /ask HTTP/1.1" 503 6208 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[116] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+REQUESTLOG {"ts": "2026-11-16T07:19:30.146Z", "request_id": "ccb041dc", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "empty", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model sent back an empty reply. Try rewording the request, or try again in a minute.", "failed_stage": "suggest_outfit", "duration_ms": 4050, "wait_ms": 0, "model_calls": 1, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:19:34 +0000] "POST /ask HTTP/1.1" 503 6090 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+[117] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 9 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Low-Rise Cargo Pants — Khaki … +6 more
+  [rate limit] 15 requests used this minute. Waiting 5s. This is normal.
+  [rate limit] service pushed back. Waiting 2s (attempt 1 of 5). This is the limiter doing its job, not a bug.
+  [rate limit] 15 requests used this minute. Waiting 4s. This is normal.
+  [rate limit] service pushed back. Waiting 2s (attempt 2 of 5). This is the limiter doing its job, not a bug.
+  [rate limit] service pushed back. Waiting 4s (attempt 3 of 5). This is the limiter doing its job, not a bug.
+  [rate limit] service pushed back. Waiting 8s (attempt 4 of 5). This is the limiter doing its job, not a bug.
+REQUESTLOG {"ts": "2026-11-16T07:19:34.331Z", "request_id": "01062a03", "route": "/ask", "status": 503, "outcome": "model_unavailable", "query": "vintage graphic tee under $30", "wardrobe_items": 10, "fault": "rate_limit", "selected_item": "lst_002", "output": null, "error": "Model unavailable: The model is rate limited and still was after 5 attempts. Wait a minute and try again — nothing is wrong with your request.", "failed_stage": "suggest_outfit", "duration_ms": 28866, "wait_ms": 0, "model_calls": 5, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 4}
+127.0.0.1 - - [16/Nov/2026:07:20:03 +0000] "POST /ask HTTP/1.1" 503 6136 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:20:03.301Z", "request_id": "1e7e9e2b", "route": "/ask", "status": 400, "outcome": "bad_input", "query": null, "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:20:03 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:20:03.357Z", "request_id": "82922236", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:20:03 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:20:03.811Z", "request_id": "76722b3b", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "   ", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:20:03 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:20:03.870Z", "request_id": "de65132d", "route": "/ask", "status": 400, "outcome": "bad_input", "query": "42", "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:20:03 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
+REQUESTLOG {"ts": "2026-11-16T07:20:03.927Z", "request_id": "2ceb27e6", "route": "/ask", "status": 400, "outcome": "bad_input", "query": null, "wardrobe_items": null, "fault": "", "selected_item": null, "output": null, "error": "missing or empty 'query'", "failed_stage": null, "duration_ms": 0, "wait_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "transient_retries": 0, "rate_limit_retries": 0}
+127.0.0.1 - - [16/Nov/2026:07:20:03 +0000] "POST /ask HTTP/1.1" 400 265 "https://fitfindr-anl0.onrender.com/health" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/5.11492.5 Chrome/156.0.8078.75 Safari/537.36"
