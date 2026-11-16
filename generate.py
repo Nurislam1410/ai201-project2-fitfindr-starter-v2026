@@ -198,6 +198,46 @@ def _record_tokens(response) -> None:
         pass
 
 
+# ─── Fault injection — CAPSTONE ──────────────────────────────────────────────
+# Lets the bad path be triggered on purpose. Off unless FITFINDR_FAULT is set
+# (see config.py). The simulated errors carry the same words the real service
+# uses, so they go down exactly the same branches below as the real thing.
+
+_flaky_fired = False
+
+
+class _EmptyResponse:
+    """Stands in for a response the service sent back with no text in it."""
+    text = None
+    usage_metadata = None
+    candidates = []
+
+
+def reset_fault_state() -> None:
+    """Called at the start of each agent run, so `flaky` fails once per run."""
+    global _flaky_fired
+    _flaky_fired = False
+
+
+def _injected_fault():
+    """
+    Returns a stand-in response, raises a stand-in error, or returns None to
+    mean "no fault — make the real call".
+    """
+    global _flaky_fired
+    fault = config.FAULT
+    if fault == "server_error":
+        raise Exception("503 UNAVAILABLE. The model is overloaded. Please try again later. [injected]")
+    if fault == "flaky" and not _flaky_fired:
+        _flaky_fired = True
+        raise Exception("503 UNAVAILABLE. The model is overloaded. Please try again later. [injected]")
+    if fault == "rate_limit":
+        raise Exception("429 RESOURCE_EXHAUSTED. Quota exceeded. Please retry in 1s. [injected]")
+    if fault == "empty":
+        return _EmptyResponse()
+    return None
+
+
 # ─── The call ────────────────────────────────────────────────────────────────
 
 

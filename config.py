@@ -89,6 +89,40 @@ MAX_RETRIES = 5
 CACHE_DIR = ROOT / ".cache"
 
 
+# ─── Failure handling — CAPSTONE (shape B) ───────────────────────────────────
+# Every model call goes through generate.py::generate(). These decide what it
+# does when that call goes wrong instead of right.
+
+# How long one model call may take before it is abandoned, in seconds. Without
+# this, a stuck call holds the request open forever — and because serve.py runs
+# one request at a time, every request queued behind it too.
+MODEL_TIMEOUT_S = float(os.getenv("FITFINDR_MODEL_TIMEOUT", "20"))
+
+# How many extra tries a *transient* failure gets: a 5xx from the service or a
+# timeout. One, because a second try a moment later usually works, and a third
+# mostly doubles how long a user waits to hear it's down. Rate limits (429)
+# keep their own, separate MAX_RETRIES above.
+TRANSIENT_RETRIES = int(os.getenv("FITFINDR_TRANSIENT_RETRIES", "1"))
+TRANSIENT_BACKOFF_S = 1.0
+
+# Fault injection, for testing the bad path on demand rather than waiting for
+# it. Unset (the default) means no faults, ever. One of:
+#   timeout         every call really goes to the service with a ~1 ms timeout
+#   server_error    every call fails with a simulated 503
+#   flaky           the FIRST call of each run fails with a simulated 503, the
+#                   retry goes through for real
+#   empty           every call comes back with no text (simulated)
+#   rate_limit      every call fails with a simulated 429
+# Simulated faults never reach the service, so they cost no quota.
+FAULT = os.getenv("FITFINDR_FAULT", "").strip().lower()
+FAULTS = {"timeout", "server_error", "flaky", "empty", "rate_limit"}
+if FAULT and FAULT not in FAULTS:
+    raise SystemExit(
+        f"FITFINDR_FAULT={FAULT!r} isn't a known fault. "
+        f"Use one of: {', '.join(sorted(FAULTS))} — or unset it."
+    )
+
+
 # ─── Paths ───────────────────────────────────────────────────────────────────
 
 DATA_DIR = ROOT / "data"
