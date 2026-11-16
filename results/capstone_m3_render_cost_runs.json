@@ -1,0 +1,10 @@
+[{"ts":"2026-11-16T05:46:53.995Z","query":"vintage graphic tee under $30","status":200,"client_ms":5985,"meta":{"duration_ms":5883,"model_calls":2,"output_tokens":116,"prompt_tokens":300,"request_id":"194a6e78"}},
+{"ts":"2026-11-16T05:46:59.942Z","query":"y2k baby tee","status":200,"client_ms":5947,"meta":{"duration_ms":5875,"model_calls":2,"output_tokens":106,"prompt_tokens":293,"request_id":"f7e62216"}},
+{"ts":"2026-11-16T05:47:07.838Z","query":"cargo pants under $40","status":200,"client_ms":7896,"meta":{"duration_ms":7824,"model_calls":2,"output_tokens":113,"prompt_tokens":298,"request_id":"bf84fc8c"}},
+{"ts":"2026-11-16T05:47:13.449Z","query":"denim jacket","status":200,"client_ms":5611,"meta":{"duration_ms":5491,"model_calls":2,"output_tokens":108,"prompt_tokens":297,"request_id":"7e4a65ed"}},
+{"ts":"2026-11-16T05:47:18.981Z","query":"graphic tee","status":200,"client_ms":5531,"meta":{"duration_ms":5285,"model_calls":2,"output_tokens":104,"prompt_tokens":297,"request_id":"6db124cb"}},
+{"ts":"2026-11-16T05:47:33.677Z","query":"vintage graphic tee under $30","status":200,"client_ms":6028,"meta":{"duration_ms":5938,"model_calls":2,"output_tokens":108,"prompt_tokens":294,"request_id":"c7562fbe"}},
+{"ts":"2026-11-16T05:47:39.153Z","query":"y2k baby tee","status":200,"client_ms":5476,"meta":{"duration_ms":5302,"model_calls":2,"output_tokens":107,"prompt_tokens":294,"request_id":"9ddfa97d"}},
+{"ts":"2026-11-16T05:47:53.461Z","query":"cargo pants under $40","status":200,"client_ms":14308,"meta":{"duration_ms":14201,"model_calls":2,"output_tokens":120,"prompt_tokens":297,"request_id":"3fa50b0d"}},
+{"ts":"2026-11-16T05:47:59.123Z","query":"denim jacket","status":200,"client_ms":5662,"meta":{"duration_ms":5538,"model_calls":2,"output_tokens":110,"prompt_tokens":298,"request_id":"cbc2bd72"}},
+{"ts":"2026-11-16T05:48:05.881Z","query":"graphic tee","status":200,"client_ms":6758,"meta":{"duration_ms":6652,"model_calls":2,"output_tokens":106,"prompt_tokens":293,"request_id":"019bfaec"}}]

@@ -417,3 +417,30 @@ The one thing I'm adding is a hardening layer on the single place every model ca
 - **No new tools and no real listings.** Connecting a real marketplace (e.g. eBay's API) in place of `data/listings.json` is the obvious next step for this as a product, but it's a capability (shape C), not hardening.
 - **No changes to the planning loop, the prompts, or search.** The still-broken size filter from Project 2 (criterion 5) stays as it is; fixing it would be a second, unrelated change.
 - **No change to concurrency.** `serve.py` keeps its one-request-at-a-time lock; replacing it with a real queue is a bigger change than one unit allows.
+
+**Running It**
+
+Hosted on Render (Path A): **https://fitfindr-anl0.onrender.com** (`GET /health`, `POST /ask`). Free Web Service, built from `main` with `pip install -r requirements-lock.txt`, started with `gunicorn serve:app --timeout 180`. Every setting, the environment it needs, and the one-command local equivalent are in [RUNNING.md](RUNNING.md) under *Capstone: how it is deployed, logged and tested*. I followed RUNNING.md from a fresh clone (new folder, new venv, `requirements-lock.txt`, gunicorn): it started, `/health` answered, and `/ask` wrote log records — about 124 MB resident, well inside the free tier's 512 MB.
+
+**What It Costs**
+
+**Measured: about $0.00036 per run**, plus **~6.8 s** of wall-clock time.
+
+*How I measured it:* 10 real `POST /ask` requests to the deployed service (five different queries, each twice, cache off with `AI201_CACHE=0`), sent from a browser on my machine between 05:46 and 05:48 UTC on 16 Nov 2026. Each response's `meta` block carries the token counts Gemini itself reported for that request (`usage_metadata`, summed by `generate.py` across the run's two model calls) — not an estimate from the prompt length. The raw numbers are in `results/capstone_m3_render_cost_runs.json`.
+
+| | Average of 10 runs | Range |
+|---|---|---|
+| Model calls | 2 | 2–2 |
+| Input (prompt) tokens | 296.1 | 293–300 |
+| Output tokens | 109.8 | 104–120 |
+| Server time (`duration_ms`) | 6,799 ms (median 5,879) | 5,285–14,201 ms |
+
+At Gemini 3.5 Flash-Lite's paid rate ($0.30 per 1M input tokens, $2.50 per 1M output tokens):
+
+```
+input   296.1 tokens × $0.30 / 1,000,000 = $0.0000888
+output  109.8 tokens × $2.50 / 1,000,000 = $0.0002745
+                                 per run ≈ $0.000363
+```
+
+*A hundred people a day*, one search each: 100 × $0.000363 = **$0.036 a day**, about **$1.09 a month** (× 30). On what I actually run today it's $0: the course key is on Gemini's free tier and Render's free instance costs nothing. The real limit at that volume is the free tier's 15 requests a minute, not money: each run is 2 calls, so about 7 runs a minute before `generate.py` starts pacing, and a burst of people at once would queue behind the one-at-a-time lock.
