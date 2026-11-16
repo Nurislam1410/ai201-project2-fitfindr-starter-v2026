@@ -390,3 +390,30 @@ which only splits on whitespace, so a combined size value with no space remains 
 ---
 
 📖 **How to run this project: [RUNNING.md](RUNNING.md)**
+
+---
+
+## Capstone
+
+**What This Extends**
+
+FitFindr, the Project 2 agent: a user describes a secondhand piece they want, the agent searches the listings (over MCP), picks one, and makes two Gemini calls — `suggest_outfit` styles it against the user's wardrobe and `create_fit_card` writes a short caption. It is served over HTTP by `serve.py` (`POST /ask`).
+
+What's new this unit is the failure handling around the model call. Until now FitFindr only behaved well when Gemini behaved well. Reading `generate.py` and `agent.py` before starting, I found four bad paths:
+
+1. **No timeout.** `generate_content()` has no time limit, so a slow or stuck Gemini call holds the request (and, because `serve.py` runs one request at a time, every request queued behind it) indefinitely.
+2. **Only rate limits are retried.** A one-off `500`/`503` from Gemini fails the run on the first try, even though the same call a second later would usually succeed.
+3. **An empty reply passes silently.** If Gemini returns no text (`response.text` is `None` or blank — e.g. a safety block), `generate()` returns `""` and the user gets a blank outfit suggestion or fit card with no error at all.
+4. **Retries running out crashes the request.** After `MAX_RETRIES` rate-limit attempts, `generate()` raises a plain `RuntimeError`. `agent.py` only catches `ModelUnavailable`, so the exception escapes `run_agent()` and `/ask` returns a `500` with a raw exception string.
+
+**The Shape**
+
+**Shape B — harden against failure**, on **Path A (hosted on Render)**.
+
+The one thing I'm adding is a hardening layer on the single place every model call goes through, `generate.py::generate()`: a per-call timeout, one retry on transient server errors (5xx / timeout), an empty-reply check, and turning "retries exhausted" into the same `ModelUnavailable` the agent already handles. The goal is that every way a Gemini call can fail ends the run with a clear message in `session["error"]` that says what happened and what to do — never a hang, a `500`, or a blank card. To test it honestly I'm also adding a fault-injection switch (`FITFINDR_FAULT` env var) that makes the model call fail on purpose in each of those ways, so the bad path can be triggered on demand instead of waited for. As every shape requires, the service also gets a structured JSON-lines log of every `/ask` request (failures included) and a Render deployment.
+
+**Out of scope** — things I considered and decided not to do this unit:
+
+- **No new tools and no real listings.** Connecting a real marketplace (e.g. eBay's API) in place of `data/listings.json` is the obvious next step for this as a product, but it's a capability (shape C), not hardening.
+- **No changes to the planning loop, the prompts, or search.** The still-broken size filter from Project 2 (criterion 5) stays as it is; fixing it would be a second, unrelated change.
+- **No change to concurrency.** `serve.py` keeps its one-request-at-a-time lock; replacing it with a real queue is a bigger change than one unit allows.
