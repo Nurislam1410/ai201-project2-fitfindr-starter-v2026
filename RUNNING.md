@@ -154,7 +154,7 @@ gunicorn serve:app
 FitFindr runs on **Render** (Path A), as a free-tier Web Service built from
 this repository.
 
-**Live URL:** `https://<fill in after first deploy>.onrender.com` — platform: Render, free instance (512 MB).
+**Live URL:** https://fitfindr-anl0.onrender.com — platform: Render, free instance (512 MB).
 
 **What the environment needs**
 
