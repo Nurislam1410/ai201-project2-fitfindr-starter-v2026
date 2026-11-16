@@ -232,7 +232,7 @@ fail in a chosen way:
 
 | Fault | What happens | Reaches Gemini? |
 |---|---|---|
-| `timeout` | every call is made with a ~1 ms time limit | yes, and is abandoned |
+| `timeout` | every call hangs for the full per-call limit (`FITFINDR_MODEL_TIMEOUT`, 20 s) and then times out, like a model that never answers | no |
 | `server_error` | every call fails with a simulated `503` | no |
 | `flaky` | the first call of a run fails with a simulated `503`; the retry is real | the retry does |
 | `empty` | every call comes back with no text | no |

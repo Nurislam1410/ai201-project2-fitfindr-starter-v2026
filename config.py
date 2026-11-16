@@ -107,7 +107,7 @@ TRANSIENT_BACKOFF_S = 1.0
 
 # Fault injection, for testing the bad path on demand rather than waiting for
 # it. Unset (the default) means no faults, ever. One of:
-#   timeout         every call really goes to the service with a ~1 ms timeout
+#   timeout         every call hangs for MODEL_TIMEOUT_S, then times out (simulated)
 #   server_error    every call fails with a simulated 503
 #   flaky           the FIRST call of each run fails with a simulated 503, the
 #                   retry goes through for real

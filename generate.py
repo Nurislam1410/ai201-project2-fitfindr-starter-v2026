@@ -233,6 +233,17 @@ def _injected_fault():
     """
     global _flaky_fired
     fault = config.FAULT
+    if fault == "timeout":
+        # A stuck model: the call goes out, the connection is fine, and the
+        # answer never arrives. So wait out the real per-call limit and then
+        # time out the way the HTTP client does on a read that never returns.
+        #
+        # (This used to make a REAL call with a ~1 ms limit. On Render that
+        # failed while *connecting* — a different error, not a timeout — so it
+        # tested neither the timeout message nor how long a timeout takes.)
+        import httpx
+        time.sleep(config.MODEL_TIMEOUT_S)
+        raise httpx.ReadTimeout("The read operation timed out [injected]")
     if fault == "server_error":
         raise Exception("503 UNAVAILABLE. The model is overloaded. Please try again later. [injected]")
     if fault == "flaky" and not _flaky_fired:
@@ -352,10 +363,8 @@ def generate(
             _call_times.append(time.monotonic())
             _session_calls += 1
 
-            # CAPSTONE: every call gets a time limit. The `timeout` fault
-            # keeps the call real and just makes the limit impossibly short,
-            # so it exercises the client's own timeout, not a stand-in.
-            timeout_s = 0.001 if config.FAULT == "timeout" else config.MODEL_TIMEOUT_S
+            # CAPSTONE: every call gets a time limit.
+            timeout_s = config.MODEL_TIMEOUT_S
             call_config = {
                 "temperature": temperature,
                 "http_options": {"timeout": max(1, int(timeout_s * 1000))},
@@ -480,7 +489,7 @@ def _short(exc: Exception) -> str:
 
 def _explain_transient(exc: Exception, tries: int) -> str:
     if _is_timeout(exc):
-        limit = 0.001 if config.FAULT == "timeout" else config.MODEL_TIMEOUT_S
+        limit = config.MODEL_TIMEOUT_S
         return (
             f"The model didn't answer within {limit:g}s ({tries} tries). It's "
             f"probably overloaded — try again in a minute."
