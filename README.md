@@ -548,6 +548,24 @@ The 10 durations per run (ms) — run 1: 17,333 · 5,200 · 5,427 · 5,887 · 5,
 
 **After-run: not completed before the deadline.** The re-run (same 72 requests, `run_capstone_trials.py --label after`) was started at 23:49 PT and takes about 20 minutes because each stuck request now really waits. I submitted before it finished, so there is no after table yet. Expected from the local test, and to be confirmed: criterion 2 → MET (the message now says "didn't answer"), criterion 1 → MISSED (about 45 s against 25 s). If that holds, the fix trades a passing number for an honest one: criterion 1's earlier pass was an artifact of the test.
 
+**After-run — completed after submission.** The re-run finished at 08:08 UTC (00:08 PT), after I'd submitted; this paragraph and the table below were added afterwards. Same 72 requests, same order, sent by `run_capstone_trials.py` from my terminal (the browser route I used for the before-run was unavailable). Every response is in `results/capstone_m5_after_trials.csv`.
+
+One thing did change mid-run, and I'm reporting it rather than re-running: my README commit at 07:54 UTC triggered a Render redeploy during trial 1. The 5th forced-timeout request was cut off by it — Render's proxy returned a **502** HTML error page after 44.5 s, with no `request_id` — and the next request (55.9 s) was the new instance starting. The code that serves `/ask` was identical before and after that deploy; only the README and the trial script changed.
+
+| Criterion | Target | Before (run 1 / 2 / 3) | After (run 1 / 2 / 3) | Before | After |
+|---|---|---|---|---|---|
+| 1. Stuck model fails within 25 s | 4 of 5 | 5/5 · 5/5 · 5/5 | 0/5 · 0/5 · 0/5 | MET | **MISSED** |
+| 2. Each failure names itself | 4 of 4 | 3/4 · 3/4 · 3/4 | 4/4 · 4/4 · 4/4 | MISSED | **MET** |
+| 3. Every request logged | 24 of 24 | 24 · 24 · 24 | 24 · 24 · 24 (see note) | MET | MET |
+| 4. Bad input → 400, no 500 | ≥3 of 5, 0 × 500 | 5/5 · 5/5 · 5/5 | 5/5 · 5/5 · 5/5 | MET | MET |
+| 5. Warm requests under 10 s | 9 of 10 | 8 · 9 · 9 | 8 · 8 · 8 | MISSED | MISSED |
+
+*Note on criterion 3 after.* The Render log for the run (`results/capstone_m5_after_render_log.txt`) has 72 `REQUESTLOG` records for 72 requests, all fields populated. 71 match a `request_id` the client received. The 72nd, the request that got the 502, has no id on the client side, but the server did record it: `fdc8a193`, received 07:53:45.893 UTC, finished as a 503 by the old worker at 07:54:31, the same second the redeploy shut that worker down. Render's proxy had already switched to the new instance and returned its own 502 to the client. So the request was recorded and I score it as met. Strictly by "same `request_id`", run 1 would be 23/24, because the client never saw the id. Either way it exposes a gap: the log records what the server did, and here the user saw something else (502, not 503).
+
+*Did it help?* It did what the diagnosis said it would, and the trade is exactly the one I expected. **Criterion 2 is now MET** — every stuck-model request ends "The model didn't answer within 20s (2 tries)", with `transient_retries: 1`. **Criterion 1 flipped to MISSED**: with a fault that really behaves like a stuck model, each request takes 44.8–46.7 s (two 20 s attempts + 1 s backoff + search), against a 25 s target. The before-run's 5/5 was the test being wrong, not the system being fast, so I count this as the fix working — it turned a misleading pass into an honest miss, which now points straight at `MODEL_TIMEOUT_S`.
+
+**Criterion 5 got worse (8/10 in every run)**, and not because of the fix. Runs 2 and 3 now also lose their 4th request (16.1 s, 16.7 s). Same stage as before (`generate.py::_wait_for_slot`), with one more mechanism visible: the pacer counts *simulated* fault calls too (`_call_times` is appended before `_injected_fault()` runs), and with no gap between trials the previous trial's `rate_limit` fault (5 counted attempts) and timeouts were still inside the 60-second window when the next trial's normal requests started. In the before-run the trials had a ~30 s gap between them, which hid it.
+
 **What's Still Broken**
 
 - **The after-run isn't recorded.** I ran out of time; the before results and the fix are committed, the measured after is not.
