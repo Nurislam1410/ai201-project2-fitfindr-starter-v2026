@@ -186,8 +186,8 @@ the table above).
 **Check it's up**
 
 ```bash
-curl https://<your-app>.onrender.com/health          # {"status":"ok"}
-curl -X POST https://<your-app>.onrender.com/ask \
+curl https://fitfindr-anl0.onrender.com/health          # {"status":"ok"}
+curl -X POST https://fitfindr-anl0.onrender.com/ask \
   -H 'Content-Type: application/json' \
   -d '{"query": "vintage graphic tee under $30"}'
 ```
@@ -218,9 +218,9 @@ response to `results/capstone_client_<label>.jsonl`, so the record survives
 even when the host's log doesn't:
 
 ```bash
-python capstone_client.py --url https://<your-app>.onrender.com --case happy -n 10
-python capstone_client.py --url https://<your-app>.onrender.com --case bad_input
-python capstone_client.py --url https://<your-app>.onrender.com --case fault --fault timeout
+python capstone_client.py --url https://fitfindr-anl0.onrender.com --case happy -n 10
+python capstone_client.py --url https://fitfindr-anl0.onrender.com --case bad_input
+python capstone_client.py --url https://fitfindr-anl0.onrender.com --case fault --fault timeout
 ```
 
 Leave off `--url` to hit `http://localhost:5000`.
