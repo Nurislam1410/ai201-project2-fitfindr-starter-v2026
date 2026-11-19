@@ -4,6 +4,67 @@ Everything about how the starter works and how to use it.
 
 ---
 
+## Try it in 2 minutes (no install, no API key)
+
+FitFindr is already running on Render: **https://fitfindr-anl0.onrender.com**.
+It is an **API, not a web page**. Opening the URL in a browser shows "404 Not Found",
+and that is expected. Use a terminal (on a Mac: Cmd+Space, type Terminal, press Enter)
+and paste these commands one at a time.
+
+**1. Wake it up.** The free server sleeps after about 15 idle minutes, so the first
+answer can take up to a minute.
+
+```bash
+curl https://fitfindr-anl0.onrender.com/health
+```
+
+Expected: `{"status":"ok"}`
+
+**2. The normal path: ask for something.**
+
+```bash
+curl -X POST https://fitfindr-anl0.onrender.com/ask \
+  -H 'Content-Type: application/json' \
+  -d '{"query": "vintage graphic tee under $30"}'
+```
+
+Expected, in about 5 to 10 seconds: JSON with `selected_item` (the listing it picked),
+`outfit_suggestion`, `fit_card` (a short caption with the price and platform), and
+`"error": null`. Change the text after `"query":` to try your own search, for example
+`"black boots under $60"`.
+
+**3. The bad path: send nothing useful.**
+
+```bash
+curl -X POST https://fitfindr-anl0.onrender.com/ask \
+  -H 'Content-Type: application/json' \
+  -d '{"query": ""}'
+```
+
+Expected, right away: HTTP 400 with `Send JSON with a 'query' field`, and `model_calls: 0`.
+
+**4. Optional: pretend the AI model is stuck.**
+
+```bash
+curl -X POST https://fitfindr-anl0.onrender.com/ask \
+  -H 'Content-Type: application/json' \
+  -H 'X-FitFindr-Fault: timeout' \
+  -d '{"query": "vintage graphic tee under $30"}'
+```
+
+Expected, after about 45 seconds: HTTP 503 with "The model didn't answer within 20s
+(2 tries)". The other fault names are `server_error`, `empty` and `rate_limit`.
+(This only works while the fault switch is on for the deployed service.)
+
+Things worth trying: a very long query, a query in another language, a price that
+nothing matches (for example `"designer coat under $5"`), or ten requests in a row
+(the free Gemini plan allows 15 model calls a minute, and each search uses 2).
+
+To run it **on your own machine** instead, you need your own Gemini API key: follow
+"Before your first class" below, then "Capstone: how it is deployed, logged and tested".
+
+---
+
 ## Before your first class
 
 Setup happens **before class**. The [environment setup page](../pages/ide_setup)
